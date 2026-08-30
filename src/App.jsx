@@ -20,11 +20,11 @@ import RecordSettlementModal from "./components/RecordSettlementModal";
 import { AddDaigouItemModal, DaigouPurchaseModal } from "./components/DaigouModals";
 
 const TABS = [
+  { id: "members", label: "旅伴", icon: Users },
   { id: "expenses", label: "花費", icon: Receipt },
   { id: "dashboard", label: "總覽", icon: LayoutDashboard },
   { id: "settlement", label: "結算", icon: ArrowLeftRight },
   { id: "daigou", label: "代購", icon: Gift },
-  { id: "members", label: "旅伴", icon: Users },
 ];
 
 export default function App() {
