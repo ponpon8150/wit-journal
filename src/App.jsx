@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { Receipt, LayoutDashboard, ArrowLeftRight, Gift, Users, Plus, Loader2 } from "lucide-react";
+import { Receipt, Wallet, ArrowLeftRight, Gift, Users, Plus, Loader2 } from "lucide-react";
 import { C, FONT_BODY, FONT_DISPLAY, computeBalances, buildDays, defaultDayFor, loadMyTrips, saveMyTrips, loadDaigou, saveDaigouLocal } from "./lib/helpers";
 import { supabaseReady } from "./lib/supabase";
 import {
@@ -20,11 +20,11 @@ import RecordSettlementModal from "./components/RecordSettlementModal";
 import { AddDaigouItemModal, DaigouPurchaseModal } from "./components/DaigouModals";
 
 const TABS = [
-  { id: "expenses", label: "花費", icon: Receipt },
-  { id: "dashboard", label: "總覽", icon: LayoutDashboard },
-  { id: "settlement", label: "結算", icon: ArrowLeftRight },
-  { id: "daigou", label: "代購", icon: Gift },
   { id: "members", label: "旅伴", icon: Users },
+  { id: "expenses", label: "花費", icon: Receipt },
+  { id: "dashboard", label: "總覽", icon: Wallet },
+  { id: "daigou", label: "代購", icon: Gift },
+  { id: "settlement", label: "結算", icon: ArrowLeftRight },
 ];
 
 export default function App() {
@@ -471,10 +471,31 @@ export default function App() {
       <div style={{
         position: "fixed", left: 0, right: 0, bottom: 0, background: C.surface, borderTop: `1px solid ${C.line}`,
         display: "flex", justifyContent: "space-around", padding: "8px 4px calc(8px + env(safe-area-inset-bottom))", zIndex: 25,
+        overflow: "visible",
       }}>
         {TABS.map((t) => {
           const Icon = t.icon;
           const active = activeTab === t.id;
+          if (t.id === "dashboard") {
+            return (
+              <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
+                flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex",
+                flexDirection: "column", alignItems: "center", gap: 3, padding: 0,
+                color: active ? C.primary : C.textSoft,
+              }}>
+                <div style={{
+                  width: 54, height: 54, borderRadius: "50%",
+                  background: active ? C.surfaceAlt : C.surface,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  marginTop: -20, border: `3px solid ${C.surface}`,
+                  boxShadow: active ? "0 4px 14px rgba(91,143,168,0.3)" : "0 2px 8px rgba(0,0,0,0.1)",
+                }}>
+                  <Icon size={24} color={active ? C.primary : C.textSoft} strokeWidth={2.2} />
+                </div>
+                <span style={{ fontSize: 10.5, fontWeight: active ? 700 : 600, marginTop: 2 }}>{t.label}</span>
+              </button>
+            );
+          }
           return (
             <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
               background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column",
