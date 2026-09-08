@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Camera, X } from "lucide-react";
-import { C, CURRENCIES, decimalsFor, roundToCurrency, fmt, uid, compressImageToDataUrl } from "../lib/helpers";
+import { C, CURRENCIES, decimalsFor, roundToCurrency, fmt, uid, compressImageToDataUrl, recognizeReceiptText } from "../lib/helpers";
 import { Modal, Field, Btn } from "./ui";
 
 export function AddDaigouItemModal({ editingItem, presetTargetName, previousTargets, onClose, onSave }) {
@@ -11,18 +11,34 @@ export function AddDaigouItemModal({ editingItem, presetTargetName, previousTarg
   const [photo, setPhoto] = useState(editingItem?.photo || null);
   const [zoomPhoto, setZoomPhoto] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [ocrLoading, setOcrLoading] = useState(false);
+  const [ocrError, setOcrError] = useState("");
   const [err, setErr] = useState("");
 
   const handlePhoto = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
+    setOcrError("");
+    let dataUrl = null;
     try {
-      setPhoto(await compressImageToDataUrl(file));
+      dataUrl = await compressImageToDataUrl(file);
+      setPhoto(dataUrl);
     } catch {
       setErr("照片處理失敗");
     }
     setUploading(false);
+
+    if (dataUrl) {
+      setOcrLoading(true);
+      try {
+        const text = await recognizeReceiptText(dataUrl, "eng");
+        setNote((prev) => (prev.trim() ? `${prev.trim()}\n${text}` : text));
+      } catch (e3) {
+        setOcrError(e3.message === "尚未設定 OCR API 金鑰" ? "尚未設定辨識功能，請手動輸入備註" : "辨識失敗，請手動輸入備註");
+      }
+      setOcrLoading(false);
+    }
   };
 
   const handleSave = () => {
@@ -53,7 +69,7 @@ export function AddDaigouItemModal({ editingItem, presetTargetName, previousTarg
           <Field label="數量／規格"><input className="tl-input" placeholder="例如：2盒" value={qty} onChange={(e) => setQty(e.target.value)} /></Field>
         </div>
       </div>
-      <Field label="拍照記錄與備註（選填）">
+      <Field label="拍照記錄與備註（選填，拍照後會自動辨識文字帶入備註）">
         <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
           {photo ? (
             <div style={{ position: "relative", width: 110, flexShrink: 0 }}>
@@ -72,8 +88,12 @@ export function AddDaigouItemModal({ editingItem, presetTargetName, previousTarg
               <input type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={handlePhoto} />
             </label>
           )}
-          <textarea className="tl-textarea" style={{ flex: 1, minHeight: 110 }}
-            placeholder="輸入細節或特別備註…" value={note} onChange={(e) => setNote(e.target.value)} />
+          <div style={{ flex: 1 }}>
+            <textarea className="tl-textarea" style={{ width: "100%", minHeight: 110 }}
+              placeholder="輸入細節或特別備註…（拍照後會自動帶入辨識到的文字）" value={note} onChange={(e) => setNote(e.target.value)} />
+            {ocrLoading && <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 6 }}>辨識中，將自動帶入文字…</div>}
+            {ocrError && <div style={{ fontSize: 11.5, color: C.warn, marginTop: 6 }}>{ocrError}</div>}
+          </div>
         </div>
       </Field>
       {err && <div style={{ color: C.danger, fontSize: 13, marginBottom: 10 }}>{err}</div>}
@@ -97,6 +117,8 @@ export function DaigouPurchaseModal({ trip, item, onClose, onSave }) {
   const [zoomPhoto, setZoomPhoto] = useState(false);
   const [note, setNote] = useState(item.purchase?.receiptNote || "");
   const [uploading, setUploading] = useState(false);
+  const [ocrLoading, setOcrLoading] = useState(false);
+  const [ocrError, setOcrError] = useState("");
   const [collected, setCollected] = useState(item.purchase?.collected || false);
   const [err, setErr] = useState("");
   const isFirstRender = useRef(true);
@@ -111,12 +133,26 @@ export function DaigouPurchaseModal({ trip, item, onClose, onSave }) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
+    setOcrError("");
+    let dataUrl = null;
     try {
-      setPhoto(await compressImageToDataUrl(file));
+      dataUrl = await compressImageToDataUrl(file);
+      setPhoto(dataUrl);
     } catch {
       setErr("照片處理失敗");
     }
     setUploading(false);
+
+    if (dataUrl) {
+      setOcrLoading(true);
+      try {
+        const text = await recognizeReceiptText(dataUrl, currency);
+        setNote((prev) => (prev.trim() ? `${prev.trim()}\n${text}` : text));
+      } catch (e3) {
+        setOcrError(e3.message === "尚未設定 OCR API 金鑰" ? "尚未設定辨識功能，請手動輸入備註" : "辨識失敗，請手動輸入備註");
+      }
+      setOcrLoading(false);
+    }
   };
 
   const handleSave = () => {
@@ -157,7 +193,7 @@ export function DaigouPurchaseModal({ trip, item, onClose, onSave }) {
           )}
         </Field>
       )}
-      <Field label="拍照記錄與備註（選填）">
+      <Field label="拍照記錄與備註（選填，拍照後會自動辨識文字帶入備註）">
         <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
           {photo ? (
             <div style={{ position: "relative", width: 110, flexShrink: 0 }}>
@@ -176,8 +212,12 @@ export function DaigouPurchaseModal({ trip, item, onClose, onSave }) {
               <input type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={handlePhoto} />
             </label>
           )}
-          <textarea className="tl-textarea" style={{ flex: 1, minHeight: 110 }}
-            placeholder="輸入細節或特別備註…" value={note} onChange={(e) => setNote(e.target.value)} />
+          <div style={{ flex: 1 }}>
+            <textarea className="tl-textarea" style={{ width: "100%", minHeight: 110 }}
+              placeholder="輸入細節或特別備註…（拍照後會自動帶入辨識到的文字）" value={note} onChange={(e) => setNote(e.target.value)} />
+            {ocrLoading && <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 6 }}>辨識中，將自動帶入文字…</div>}
+            {ocrError && <div style={{ fontSize: 11.5, color: C.warn, marginTop: 6 }}>{ocrError}</div>}
+          </div>
         </div>
       </Field>
       <Field label="收款狀態">

@@ -195,6 +195,40 @@ export async function fetchLiveRate(fromCurrency, toCurrency) {
   return { rate: data.rates[toCurrency] };
 }
 
+/* ---------------------------------- 收據拍照辨識（OCR.space 免費 API） ----------------------------------
+   免費申請：https://ocr.space/ocrapi/freekey（只需 email，不用信用卡）
+   申請到金鑰後，到 Vercel → Settings → Environment Variables 新增 VITE_OCR_SPACE_API_KEY。
+   免費方案只能單純把照片上的文字整段抓出來，不會像 AI 一樣自動整理成品項/金額、也不會翻譯外文，
+   所以會依「幣別」猜一個比較合理的辨識語言，抓出來的文字直接放進備註欄，使用者可以自行修改。
+*/
+export const OCR_LANGUAGE_FOR_CURRENCY = {
+  TWD: "cht", CNY: "chs", HKD: "cht", JPY: "jpn", KRW: "kor",
+  THB: "tha", VND: "vnm", USD: "eng", EUR: "eng", GBP: "eng", SGD: "eng",
+};
+
+export async function recognizeReceiptText(dataUrl, currency) {
+  const apiKey = import.meta.env.VITE_OCR_SPACE_API_KEY;
+  if (!apiKey) throw new Error("尚未設定 OCR API 金鑰");
+  const language = OCR_LANGUAGE_FOR_CURRENCY[currency] || "eng";
+  const form = new URLSearchParams();
+  form.set("apikey", apiKey);
+  form.set("base64Image", dataUrl);
+  form.set("language", language);
+  form.set("OCREngine", "2");
+  form.set("scale", "true");
+  form.set("detectOrientation", "true");
+  form.set("isTable", "true");
+  const resp = await fetch("https://api.ocr.space/parse/image", { method: "POST", body: form });
+  const data = await resp.json();
+  if (data.IsErroredOnProcessing || !data.ParsedResults || !data.ParsedResults[0]) {
+    const msg = Array.isArray(data.ErrorMessage) ? data.ErrorMessage[0] : data.ErrorMessage;
+    throw new Error(msg || "辨識失敗");
+  }
+  const text = (data.ParsedResults[0].ParsedText || "").trim();
+  if (!text) throw new Error("沒有辨識到文字");
+  return text;
+}
+
 export function safeJSON(str, fallback) {
   try {
     const v = JSON.parse(str);

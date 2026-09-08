@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Camera, X, Check, RefreshCw } from "lucide-react";
-import { C, CURRENCIES, decimalsFor, roundToCurrency, fmt, uid, uploadReceiptPhoto, fetchLiveRate } from "../lib/helpers";
+import { C, CURRENCIES, decimalsFor, roundToCurrency, fmt, uid, uploadReceiptPhoto, fetchLiveRate, compressImageToDataUrl, recognizeReceiptText } from "../lib/helpers";
 import { CATEGORIES, catMeta } from "../lib/categories";
 import { Modal, Field, Btn, Avatar } from "./ui";
 
@@ -32,6 +32,8 @@ export default function AddExpenseModal({ trip, members, onClose, onSave, meId, 
   const [zoomPhoto, setZoomPhoto] = useState(false);
   const [note, setNote] = useState(editingExpense?.note || "");
   const [uploading, setUploading] = useState(false);
+  const [ocrLoading, setOcrLoading] = useState(false);
+  const [ocrError, setOcrError] = useState("");
   const [rateLoading, setRateLoading] = useState(false);
   const [rateNote, setRateNote] = useState("");
   const [err, setErr] = useState("");
@@ -85,6 +87,7 @@ export default function AddExpenseModal({ trip, members, onClose, onSave, meId, 
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
+    setOcrError("");
     try {
       const url = await uploadReceiptPhoto(trip.code, file);
       setPhotoUrl(url);
@@ -92,6 +95,17 @@ export default function AddExpenseModal({ trip, members, onClose, onSave, meId, 
       setErr("照片上傳失敗，請確認網路連線或稍後再試");
     }
     setUploading(false);
+
+    // 拍照自動辨識文字，抓出來的內容會加進備註欄，不會覆蓋掉你原本打的字
+    setOcrLoading(true);
+    try {
+      const dataUrl = await compressImageToDataUrl(file);
+      const text = await recognizeReceiptText(dataUrl, currency);
+      setNote((prev) => (prev.trim() ? `${prev.trim()}\n${text}` : text));
+    } catch (e3) {
+      setOcrError(e3.message === "尚未設定 OCR API 金鑰" ? "尚未設定辨識功能，請手動輸入備註" : "辨識失敗，請手動輸入備註");
+    }
+    setOcrLoading(false);
   };
 
   const handleSave = async () => {
@@ -292,7 +306,7 @@ export default function AddExpenseModal({ trip, members, onClose, onSave, meId, 
         </select>
       </Field>
 
-      <Field label="拍照記錄與備註（選填）">
+      <Field label="拍照記錄與備註（選填，拍照後會自動辨識文字帶入備註）">
         <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
           {photoUrl ? (
             <div style={{ position: "relative", width: 110, flexShrink: 0 }}>
@@ -311,10 +325,14 @@ export default function AddExpenseModal({ trip, members, onClose, onSave, meId, 
               <input type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={handlePhoto} />
             </label>
           )}
-          <textarea
-            className="tl-textarea" style={{ flex: 1, minHeight: 110 }}
-            placeholder="輸入細節或特別備註…" value={note} onChange={(e) => setNote(e.target.value)}
-          />
+          <div style={{ flex: 1 }}>
+            <textarea
+              className="tl-textarea" style={{ width: "100%", minHeight: 110 }}
+              placeholder="輸入細節或特別備註…（拍照後會自動帶入辨識到的文字）" value={note} onChange={(e) => setNote(e.target.value)}
+            />
+            {ocrLoading && <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 6 }}>辨識中，將自動帶入文字…</div>}
+            {ocrError && <div style={{ fontSize: 11.5, color: C.warn, marginTop: 6 }}>{ocrError}</div>}
+          </div>
         </div>
       </Field>
 
