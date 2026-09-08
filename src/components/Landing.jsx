@@ -8,6 +8,7 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
   const [mode, setMode] = useState(initialJoinCode ? "join" : "create");
   const [tripName, setTripName] = useState("");
   const [baseCurrency, setBaseCurrency] = useState("TWD");
+  const [travelCurrency, setTravelCurrency] = useState("JPY");
   const [startDate, setStartDate] = useState("");
   const [dayCount, setDayCount] = useState(5);
   const [myName, setMyName] = useState("");
@@ -87,8 +88,13 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
               <Field label="旅程名稱">
                 <input className="tl-input" placeholder="例如：東京五日遊" value={tripName} onChange={(e) => setTripName(e.target.value)} />
               </Field>
-              <Field label="主要幣別（花費將統一換算成此幣別顯示）">
+              <Field label="本國幣別（花費將統一換算成此幣別顯示，可自行變更）">
                 <select className="tl-input" value={baseCurrency} onChange={(e) => setBaseCurrency(e.target.value)}>
+                  {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </Field>
+              <Field label="旅遊幣別（可在總覽頁點國旗切換顯示，可自行變更）">
+                <select className="tl-input" value={travelCurrency} onChange={(e) => setTravelCurrency(e.target.value)}>
                   {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
               </Field>
@@ -111,7 +117,7 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
                 <input className="tl-input" placeholder="讓同行夥伴認出你" value={myName} onChange={(e) => setMyName(e.target.value)} />
               </Field>
               {err && <div style={{ color: C.danger, fontSize: 13, marginBottom: 10 }}>{err}</div>}
-              <Btn full disabled={busy} onClick={() => onCreate({ tripName, baseCurrency, startDate, dayCount, myName })}>
+              <Btn full disabled={busy} onClick={() => onCreate({ tripName, baseCurrency, travelCurrency, startDate, dayCount, myName })}>
                 {busy ? "建立中…" : "建立旅程"}
               </Btn>
             </>

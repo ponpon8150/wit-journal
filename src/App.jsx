@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { Receipt, Wallet, ArrowLeftRight, Gift, Users, Plus, Loader2 } from "lucide-react";
+import { Receipt, Wallet, HandCoins, Gift, Users, Plus, Loader2 } from "lucide-react";
 import { C, FONT_BODY, FONT_DISPLAY, computeBalances, buildDays, defaultDayFor, loadMyTrips, saveMyTrips, loadDaigou, saveDaigouLocal } from "./lib/helpers";
 import { supabaseReady } from "./lib/supabase";
 import {
@@ -23,8 +23,8 @@ const TABS = [
   { id: "members", label: "旅伴", icon: Users },
   { id: "expenses", label: "花費", icon: Receipt },
   { id: "dashboard", label: "總覽", icon: Wallet },
+  { id: "settlement", label: "結算", icon: HandCoins },
   { id: "daigou", label: "代購", icon: Gift },
-  { id: "settlement", label: "結算", icon: ArrowLeftRight },
 ];
 
 export default function App() {
@@ -70,7 +70,16 @@ export default function App() {
   const [purchaseModalItem, setPurchaseModalItem] = useState(null);
 
   /* ---------------------------------- 網址 <-> 旅程代碼 同步 ---------------------------------- */
+  // 這個 effect 只負責「之後」把目前旅程代碼同步回網址列（例如建立/加入/離開旅程時）。
+  // 第一次載入（頁面剛打開）時故意跳過，不去動網址——不然會搶在下面那個
+  // 「讀取分享連結代碼」的 effect 之前，就把網址上朋友分享來的 ?code=XXXXXX 清掉，
+  // 導致分享連結永遠讀不到代碼（這正是造成分享連結打不開的原因）。
+  const skippedFirstUrlSync = useRef(false);
   useEffect(() => {
+    if (!skippedFirstUrlSync.current) {
+      skippedFirstUrlSync.current = true;
+      return;
+    }
     const url = new URL(window.location.href);
     if (currentCode) url.searchParams.set("code", currentCode);
     else url.searchParams.delete("code");
@@ -137,13 +146,13 @@ export default function App() {
   }
 
   /* ---------------------------------- 建立 / 加入旅程 ---------------------------------- */
-  async function handleCreate({ tripName, baseCurrency, startDate, dayCount, myName }) {
+  async function handleCreate({ tripName, baseCurrency, travelCurrency, startDate, dayCount, myName }) {
     if (!tripName.trim()) return setErr("請輸入旅程名稱");
     if (!myName.trim()) return setErr("請輸入你的名字");
     setErr("");
     setBusy(true);
     try {
-      const { code, meId } = await createTrip({ tripName: tripName.trim(), baseCurrency, startDate, dayCount, myName: myName.trim() });
+      const { code, meId } = await createTrip({ tripName: tripName.trim(), baseCurrency, travelCurrency, startDate, dayCount, myName: myName.trim() });
       addToMyTrips(code, meId, tripName.trim(), startDate);
       enterTrip(code, meId);
     } catch (e) {
@@ -292,9 +301,9 @@ export default function App() {
     }
   };
 
-  const handleUpdateTripInfo = async (name, startDate, dayCount) => {
+  const handleUpdateTripInfo = async (name, startDate, dayCount, travelCurrency) => {
     try {
-      await updateTripInfo(currentCode, { name, startDate, dayCount });
+      await updateTripInfo(currentCode, { name, startDate, dayCount, travelCurrency });
       scheduleRefresh(currentCode);
       showToast("已更新旅程設定");
     } catch (e) {
@@ -433,7 +442,7 @@ export default function App() {
           <ExpensesView trip={trip} members={members} expenses={expenses} onDelete={handleDeleteExpense} onEdit={openEditExpense} selectedDayId={selectedDayId} onSelectDay={setSelectedDayId} days={days} />
         )}
         {activeTab === "dashboard" && (
-          <DashboardView trip={trip} members={members} expenses={expenses} balances={balances} meId={currentMeId} />
+          <DashboardView trip={trip} members={members} expenses={expenses} balances={balances} meId={currentMeId} daigouItems={daigouItems} onUpdateRate={handleUpdateRate} />
         )}
         {activeTab === "settlement" && (
           <SettlementView trip={trip} members={members} balances={balances} settlements={settlements} onOpenRecord={openRecordSettlement} meId={currentMeId} onFinalize={handleFinalize} onUnfreeze={handleUnfreeze} />

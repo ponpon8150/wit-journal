@@ -31,7 +31,7 @@ export async function fetchSettlements(code) {
   return data || [];
 }
 
-export async function createTrip({ tripName, baseCurrency, startDate, dayCount, myName }) {
+export async function createTrip({ tripName, baseCurrency, travelCurrency, startDate, dayCount, myName }) {
   let code;
   let tripErr;
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -40,6 +40,7 @@ export async function createTrip({ tripName, baseCurrency, startDate, dayCount, 
       code,
       name: tripName,
       base_currency: baseCurrency,
+      travel_currency: travelCurrency && travelCurrency !== baseCurrency ? travelCurrency : null,
       start_date: startDate || null,
       day_count: parseInt(dayCount) || 0,
       rates: { [baseCurrency]: 1 },
@@ -88,8 +89,13 @@ export async function deleteMember(memberId) {
   if (error) throw error;
 }
 
-export async function updateTripInfo(code, { name, startDate, dayCount }) {
-  const { error } = await supabase.from("trips").update({ name, start_date: startDate || null, day_count: dayCount }).eq("code", code);
+export async function updateTripInfo(code, { name, startDate, dayCount, travelCurrency }) {
+  const { error } = await supabase.from("trips").update({
+    name,
+    start_date: startDate || null,
+    day_count: dayCount,
+    travel_currency: travelCurrency || null,
+  }).eq("code", code);
   if (error) throw error;
 }
 

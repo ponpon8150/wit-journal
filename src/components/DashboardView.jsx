@@ -1,13 +1,52 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Gift } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
-import { C, FONT_DISPLAY, fmt, memberColor } from "../lib/helpers";
+import { C, FONT_DISPLAY, fmt, memberColor, flagFor, fetchLiveRate } from "../lib/helpers";
 import { CATEGORIES } from "../lib/categories";
 import { Card, Avatar, Tag } from "./ui";
 
-export default function DashboardView({ trip, members, expenses, balances, meId }) {
+export default function DashboardView({ trip, members, expenses, balances, meId, daigouItems = [], onUpdateRate }) {
   const totalBase = expenses.reduce((s, e) => s + Number(e.amount_base), 0);
   const myPaid = expenses.filter((e) => e.payer_id === meId).reduce((s, e) => s + Number(e.amount_base), 0);
   const myShare = expenses.reduce((s, e) => s + Number((e.participants || []).find((p) => p.memberId === meId)?.shareBase || 0), 0);
+
+  // 旅遊幣別：可在總覽頁點國旗切換「旅程總花費」卡片顯示的幣別
+  const travelCurrency = trip.travel_currency && trip.travel_currency !== trip.base_currency ? trip.travel_currency : null;
+  const [displayCurrency, setDisplayCurrency] = useState(trip.base_currency);
+
+  useEffect(() => {
+    setDisplayCurrency(trip.base_currency);
+  }, [trip.code, trip.base_currency]);
+
+  // 如果旅遊幣別還沒有匯率，自動查一次即時匯率（跟新增花費時的邏輯一致）
+  useEffect(() => {
+    if (!travelCurrency || trip.rates?.[travelCurrency] != null || !onUpdateRate) return;
+    let cancelled = false;
+    fetchLiveRate(travelCurrency, trip.base_currency)
+      .then(({ rate }) => {
+        if (!cancelled) onUpdateRate(travelCurrency, Math.round(rate * 10000) / 10000);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [travelCurrency, trip.base_currency, trip.rates, onUpdateRate]);
+
+  const travelRate = travelCurrency ? trip.rates?.[travelCurrency] : null;
+  const convert = (amountBase) => {
+    if (displayCurrency === trip.base_currency) return amountBase;
+    if (!travelRate) return null;
+    return amountBase / travelRate;
+  };
+  const flagBtnStyle = (active) => ({
+    width: 28, height: 28, borderRadius: "50%", padding: 0, cursor: "pointer", fontSize: 14,
+    display: "flex", alignItems: "center", justifyContent: "center",
+    border: active ? "2px solid #fff" : "2px solid rgba(255,255,255,0.35)",
+    background: active ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.1)",
+  });
+
+  const daigouTotal = daigouItems.reduce((s, it) => s + (it.purchase?.amountBase || 0), 0);
+  const daigouCollected = daigouItems.reduce((s, it) => s + (it.purchase?.collected ? it.purchase.amountBase : 0), 0);
+  const daigouPending = daigouTotal - daigouCollected;
+  const daigouBoughtCount = daigouItems.filter((it) => it.bought).length;
 
   const byCategory = useMemo(() => {
     const m = {};
@@ -25,22 +64,65 @@ export default function DashboardView({ trip, members, expenses, balances, meId 
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <Card style={{ background: `linear-gradient(155deg, ${C.primary} 45%, #52C2CC 100%)`, color: "#fff" }}>
         <div style={{ fontSize: 13, opacity: 0.85, paddingLeft: 20 }}>旅程總花費</div>
-        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 34, marginTop: 2, textAlign: "right", paddingRight: 26 }}>{fmt(totalBase, trip.base_currency)} <span style={{ fontSize: 16 }}>{trip.base_currency}</span></div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: travelCurrency ? "space-between" : "flex-end", marginTop: 2, paddingLeft: 20, paddingRight: 26 }}>
+          {travelCurrency && (
+            <div style={{ display: "flex", gap: 6 }}>
+              <button onClick={() => setDisplayCurrency(trip.base_currency)} title={`顯示為 ${trip.base_currency}`} style={flagBtnStyle(displayCurrency === trip.base_currency)}>
+                {flagFor(trip.base_currency)}
+              </button>
+              <button onClick={() => setDisplayCurrency(travelCurrency)} title={`顯示為 ${travelCurrency}`} style={flagBtnStyle(displayCurrency === travelCurrency)}>
+                {flagFor(travelCurrency)}
+              </button>
+            </div>
+          )}
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 34 }}>
+            {convert(totalBase) == null ? (
+              <span style={{ fontSize: 15, opacity: 0.85 }}>查詢匯率中…</span>
+            ) : (
+              <>{fmt(convert(totalBase), displayCurrency)} <span style={{ fontSize: 16 }}>{displayCurrency}</span></>
+            )}
+          </div>
+        </div>
         <div style={{ fontSize: 12.5, opacity: 0.8, marginTop: 2, textAlign: "right", paddingRight: 26 }}>共 {expenses.length} 筆紀錄 · {members.length} 位旅伴</div>
         {meId && (
           <div style={{ display: "flex", marginTop: 10, paddingTop: 10, borderTop: "1px solid rgba(255,255,255,0.28)" }}>
             <div style={{ flex: 1, textAlign: "center" }}>
               <div style={{ fontSize: 11, opacity: 0.85 }}>我先墊付了</div>
-              <div style={{ fontSize: 18, fontWeight: 700, marginTop: 2 }}>{fmt(myPaid, trip.base_currency)}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, marginTop: 2 }}>{convert(myPaid) == null ? "—" : fmt(convert(myPaid), displayCurrency)}</div>
             </div>
             <div style={{ width: 1, background: "rgba(255,255,255,0.28)", margin: "0 14px" }} />
             <div style={{ flex: 1, textAlign: "center" }}>
               <div style={{ fontSize: 11, opacity: 0.85 }}>我的總花費</div>
-              <div style={{ fontSize: 18, fontWeight: 700, marginTop: 2 }}>{fmt(myShare, trip.base_currency)}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, marginTop: 2 }}>{convert(myShare) == null ? "—" : fmt(convert(myShare), displayCurrency)}</div>
             </div>
           </div>
         )}
       </Card>
+
+      {daigouItems.length > 0 && (
+        <Card style={{ background: "linear-gradient(135deg, #8AB89E, #A9D0BC)", color: "#fff" }}>
+          <div style={{ fontSize: 13, opacity: 0.9, display: "flex", alignItems: "center", gap: 6 }}>
+            <Gift size={14} /> 我的代購金額
+          </div>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30, marginTop: 4 }}>
+            {fmt(daigouTotal, trip.base_currency)} <span style={{ fontSize: 14 }}>{trip.base_currency}</span>
+          </div>
+          <div style={{ fontSize: 12.5, opacity: 0.85, marginTop: 4 }}>共 {daigouItems.length} 項清單 · {daigouBoughtCount} 項已購買</div>
+          {daigouTotal > 0 && (
+            <div style={{ display: "flex", marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.28)" }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 11, opacity: 0.85 }}>已收款</div>
+                <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{fmt(daigouCollected, trip.base_currency)}</div>
+              </div>
+              <div style={{ width: 1, background: "rgba(255,255,255,0.28)", margin: "0 14px" }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 11, opacity: 0.85 }}>未收款</div>
+                <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{fmt(daigouPending, trip.base_currency)}</div>
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
 
       {byCategory.length > 0 && (
         <Card>

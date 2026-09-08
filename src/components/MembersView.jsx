@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Plus, Trash2, Copy } from "lucide-react";
-import { C, FONT_DISPLAY } from "../lib/helpers";
+import { C, FONT_DISPLAY, CURRENCIES } from "../lib/helpers";
 import { Card, Avatar, Tag, Btn, Modal, Field } from "./ui";
 import RateManagerCard from "./RateManagerCard";
 
@@ -8,9 +8,10 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
   const [name, setName] = useState(trip.name);
   const [startDate, setStartDate] = useState(trip.start_date || "");
   const [dayCount, setDayCount] = useState(trip.day_count || 0);
+  const [travelCurrency, setTravelCurrency] = useState(trip.travel_currency || "");
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [copied, setCopied] = useState(false);
-  const dirty = name.trim() !== trip.name || startDate !== (trip.start_date || "") || String(dayCount) !== String(trip.day_count || 0);
+  const dirty = name.trim() !== trip.name || startDate !== (trip.start_date || "") || String(dayCount) !== String(trip.day_count || 0) || travelCurrency !== (trip.travel_currency || "");
   const memberIdx = (id) => members.findIndex((m) => m.id === id);
 
   const copyLink = async () => {
@@ -36,10 +37,16 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
             <Field label="旅程天數"><input className="tl-input" type="number" min="0" value={dayCount} onChange={(e) => setDayCount(e.target.value)} /></Field>
           </div>
         </div>
-        <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: -8, marginBottom: dirty ? 10 : 0 }}>
+        <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: -8, marginBottom: 14 }}>
           記帳時會依此產生「行前 / DAY1…DAY{dayCount || "N"} / 回國」分頁
         </div>
-        {dirty && <Btn full onClick={() => onUpdateTripInfo(name.trim() || trip.name, startDate, parseInt(dayCount) || 0)}>儲存旅程設定</Btn>}
+        <Field label={`旅遊幣別（選填，用來在總覽頁點國旗切換金額顯示；本國幣別為 ${trip.base_currency}）`}>
+          <select className="tl-input" value={travelCurrency} onChange={(e) => setTravelCurrency(e.target.value)}>
+            <option value="">不設定</option>
+            {CURRENCIES.filter((c) => c !== trip.base_currency).map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </Field>
+        {dirty && <Btn full onClick={() => onUpdateTripInfo(name.trim() || trip.name, startDate, parseInt(dayCount) || 0, travelCurrency || null)}>儲存旅程設定</Btn>}
       </Card>
 
       <Card>

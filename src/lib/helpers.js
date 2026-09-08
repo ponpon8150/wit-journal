@@ -24,6 +24,12 @@ export const memberColor = (idx) => MEMBER_COLORS[((idx % MEMBER_COLORS.length) 
 export const CURRENCIES = ["TWD", "USD", "JPY", "EUR", "KRW", "CNY", "HKD", "THB", "GBP", "VND", "SGD"];
 const ZERO_DECIMAL_CURRENCIES = ["JPY", "KRW", "VND", "TWD"];
 
+export const CURRENCY_FLAGS = {
+  TWD: "🇹🇼", USD: "🇺🇸", JPY: "🇯🇵", EUR: "🇪🇺", KRW: "🇰🇷",
+  CNY: "🇨🇳", HKD: "🇭🇰", THB: "🇹🇭", GBP: "🇬🇧", VND: "🇻🇳", SGD: "🇸🇬",
+};
+export const flagFor = (currency) => CURRENCY_FLAGS[currency] || "🏳️";
+
 export const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
 
 export function genTripCode() {

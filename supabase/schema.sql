@@ -61,6 +61,10 @@ create table if not exists settlements (
   created_at timestamptz not null default now()
 );
 
+-- 「旅遊幣別」：本國幣別（base_currency）以外，用來在總覽頁切換顯示的第二種幣別。
+-- 用 add column if not exists，重複執行這份 SQL 或是舊資料庫升級都不會出錯。
+alter table trips add column if not exists travel_currency text;
+
 create index if not exists idx_members_trip on members(trip_code);
 create index if not exists idx_expenses_trip on expenses(trip_code);
 create index if not exists idx_settlements_trip on settlements(trip_code);
@@ -92,8 +96,22 @@ create policy "anon full access" on settlements for all using (true) with check 
 
 -- ------------------------------------------------------------------
 -- 即時同步：讓其他裝置能即時收到新增/修改/刪除
+-- 用 DO 區塊逐一檢查再加入，這樣重複執行這份 SQL、或是 Supabase 新專案
+-- 預設就已經把某些表加進 supabase_realtime 發佈清單時，都不會噴錯。
 -- ------------------------------------------------------------------
-alter publication supabase_realtime add table trips, members, expenses, settlements;
+do $$
+declare
+  t text;
+begin
+  foreach t in array array['trips', 'members', 'expenses', 'settlements'] loop
+    if not exists (
+      select 1 from pg_publication_tables
+      where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = t
+    ) then
+      execute format('alter publication supabase_realtime add table %I', t);
+    end if;
+  end loop;
+end $$;
 
 -- ------------------------------------------------------------------
 -- 收據照片儲存空間（Storage bucket）
