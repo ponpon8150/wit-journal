@@ -1,13 +1,46 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Check, ArrowRight } from "lucide-react";
-import { C, fmt, simplifyDebts } from "../lib/helpers";
+import { C, fmt, simplifyDebts, flagFor, fetchLiveRate } from "../lib/helpers";
 import { Card, Avatar, Tag, Btn, Modal } from "./ui";
 
-export default function SettlementView({ trip, members, balances, settlements, onOpenRecord, meId, onFinalize, onUnfreeze }) {
+export default function SettlementView({ trip, members, balances, settlements, onOpenRecord, meId, onFinalize, onUnfreeze, onUpdateRate }) {
   const suggestions = useMemo(() => simplifyDebts(balances), [balances]);
   const memberName = (id) => members.find((m) => m.id === id)?.name || "已離開的旅伴";
   const memberIdx = (id) => members.findIndex((m) => m.id === id);
   const [confirmFinalize, setConfirmFinalize] = useState(false);
+
+  // 旅遊幣別：可切換這個分頁裡所有金額顯示的幣別（邏輯跟總覽頁的國旗切換一致）
+  const travelCurrency = trip.travel_currency && trip.travel_currency !== trip.base_currency ? trip.travel_currency : null;
+  const [displayCurrency, setDisplayCurrency] = useState(trip.base_currency);
+
+  useEffect(() => {
+    setDisplayCurrency(trip.base_currency);
+  }, [trip.code, trip.base_currency]);
+
+  useEffect(() => {
+    if (!travelCurrency || trip.rates?.[travelCurrency] != null || !onUpdateRate) return;
+    let cancelled = false;
+    fetchLiveRate(travelCurrency, trip.base_currency)
+      .then(({ rate }) => {
+        if (!cancelled) onUpdateRate(travelCurrency, Math.round(rate * 10000) / 10000);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [travelCurrency, trip.base_currency, trip.rates, onUpdateRate]);
+
+  const travelRate = travelCurrency ? trip.rates?.[travelCurrency] : null;
+  const convert = (amountBase) => {
+    if (displayCurrency === trip.base_currency) return amountBase;
+    if (!travelRate) return null;
+    return amountBase / travelRate;
+  };
+  const showAmt = (amountBase) => (convert(amountBase) == null ? "—" : fmt(convert(amountBase), displayCurrency));
+  const flagBtnStyle = (active) => ({
+    width: 28, height: 28, borderRadius: "50%", padding: 0, cursor: "pointer", fontSize: 14,
+    display: "flex", alignItems: "center", justifyContent: "center",
+    border: active ? `1.5px solid ${C.primary}` : `1px solid ${C.line}`,
+    background: active ? `${C.primary}18` : "#fff",
+  });
 
   const frozen = trip.final_settlement;
   const frozenLines = useMemo(() => {
@@ -23,6 +56,18 @@ export default function SettlementView({ trip, members, balances, settlements, o
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      {travelCurrency && (
+        <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 2 }}>
+          <span style={{ fontSize: 12, color: C.textSoft }}>顯示幣別</span>
+          <button onClick={() => setDisplayCurrency(trip.base_currency)} title={`顯示為 ${trip.base_currency}`} style={flagBtnStyle(displayCurrency === trip.base_currency)}>
+            {flagFor(trip.base_currency)}
+          </button>
+          <button onClick={() => setDisplayCurrency(travelCurrency)} title={`顯示為 ${travelCurrency}`} style={flagBtnStyle(displayCurrency === travelCurrency)}>
+            {flagFor(travelCurrency)}
+          </button>
+          {!travelRate && <span style={{ fontSize: 11.5, color: C.textSoft }}>正在查詢 {travelCurrency} 匯率…</span>}
+        </div>
+      )}
       {frozen ? (
         <Card>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
@@ -56,7 +101,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
                         {line.to === meId && <Tag label="我" color={C.primary} />}
                       </div>
                       {line.paid > 0 && !settled && (
-                        <div style={{ fontSize: 11, color: C.textSoft }}>原欠 {fmt(line.amount, trip.base_currency)}，已還 {fmt(line.paid, trip.base_currency)}</div>
+                        <div style={{ fontSize: 11, color: C.textSoft }}>原欠 {showAmt(line.amount)}，已還 {showAmt(line.paid)}</div>
                       )}
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
@@ -64,7 +109,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
                         <Check size={18} color={C.success} />
                       ) : (
                         <>
-                          <span style={{ fontWeight: 700, color: C.warn }}>{fmt(line.remaining, trip.base_currency)} {trip.base_currency}</span>
+                          <span style={{ fontWeight: 700, color: C.warn }}>{showAmt(line.remaining)} {displayCurrency}</span>
                           <Btn variant="subtle" onClick={() => onOpenRecord({ from: line.from, to: line.to, amount: line.remaining })}>還款</Btn>
                         </>
                       )}
@@ -97,7 +142,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
                     {s.to === meId && <Tag label="我" color={C.primary} />}
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span style={{ fontWeight: 700, color: C.warn }}>{fmt(s.amount, trip.base_currency)} {trip.base_currency}</span>
+                    <span style={{ fontWeight: 700, color: C.warn }}>{showAmt(s.amount)} {displayCurrency}</span>
                     <Btn variant="subtle" onClick={() => onOpenRecord(s)}>還款</Btn>
                   </div>
                 </div>
@@ -121,7 +166,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
               <div key={s.id} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
                 <span style={{ color: C.text }}><b>{memberName(s.from_member)}</b> 還給 <b>{memberName(s.to_member)}</b></span>
                 <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ color: C.success, fontWeight: 700 }}>{fmt(s.amount, trip.base_currency)} {trip.base_currency}</span>
+                  <span style={{ color: C.success, fontWeight: 700 }}>{showAmt(s.amount)} {displayCurrency}</span>
                   <span style={{ color: C.textSoft, fontSize: 11 }}>{new Date(s.occurred_at).toLocaleDateString("zh-TW")}</span>
                 </span>
               </div>

@@ -445,7 +445,7 @@ export default function App() {
           <DashboardView trip={trip} members={members} expenses={expenses} balances={balances} meId={currentMeId} daigouItems={daigouItems} onUpdateRate={handleUpdateRate} />
         )}
         {activeTab === "settlement" && (
-          <SettlementView trip={trip} members={members} balances={balances} settlements={settlements} onOpenRecord={openRecordSettlement} meId={currentMeId} onFinalize={handleFinalize} onUnfreeze={handleUnfreeze} />
+          <SettlementView trip={trip} members={members} balances={balances} settlements={settlements} onOpenRecord={openRecordSettlement} meId={currentMeId} onFinalize={handleFinalize} onUnfreeze={handleUnfreeze} onUpdateRate={handleUpdateRate} />
         )}
         {activeTab === "daigou" && (
           <DaigouListView
