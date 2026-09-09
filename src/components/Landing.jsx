@@ -26,7 +26,6 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
         <div style={{ maxWidth: 460, margin: "56px auto 0", textAlign: "center" }}>
           <div style={{ fontFamily: FONT_DISPLAY, fontSize: 23, color: C.text, letterSpacing: 0.5 }}>唯旅誌｜WIT JOURNAL</div>
           <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 6, letterSpacing: 1, fontStyle: "italic" }}>Little Trips, Slow Living.</div>
-          <div style={{ fontSize: 13, color: C.textSoft, marginTop: 14 }}>多幣別 · 拍照記錄 · 分帳結算 · 即時同步</div>
         </div>
 
         {sorted.length > 0 ? (
@@ -56,6 +55,9 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
         )}
         <div style={{ textAlign: "center", fontSize: 12, color: C.textSoft, marginTop: 14, maxWidth: 420, margin: "14px auto 0" }}>
           把這個網頁連結和旅程代碼分享給旅伴，大家就能一起即時記帳
+        </div>
+        <div style={{ textAlign: "center", fontSize: 13, color: C.textSoft, marginTop: 10 }}>
+          多幣別 · 拍照記錄 · 分帳結算 · 即時同步
         </div>
         {initialJoinCode && !myTrips.some((t) => t.code === initialJoinCode) && (
           <div style={{ textAlign: "center", fontSize: 12.5, color: C.primary, marginTop: 10, fontWeight: 600 }}>
