@@ -23,10 +23,16 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
     <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT_BODY, paddingBottom: 40 }}>
       <HorizonBanner />
       <div style={{ padding: "0 20px", marginTop: -36, position: "relative" }}>
+        <div style={{ maxWidth: 460, margin: "56px auto 0", textAlign: "center" }}>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 23, color: C.text, letterSpacing: 0.5 }}>唯旅誌｜WIT JOURNAL</div>
+          <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 6, letterSpacing: 1, fontStyle: "italic" }}>Little Trips, Slow Living.</div>
+          <div style={{ fontSize: 13, color: C.textSoft, marginTop: 14 }}>多幣別 · 拍照記錄 · 分帳結算 · 即時同步</div>
+        </div>
+
         {sorted.length > 0 ? (
-          <div style={{ maxWidth: 460, margin: "88px auto 14px" }}>
-            <div style={{ fontSize: 18, fontWeight: 800, color: C.text, position: "relative", top: -20, marginBottom: 10, textAlign: "center" }}>旅程口袋清單</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8, position: "relative", top: -20 }}>
+          <div style={{ maxWidth: 460, margin: "26px auto 14px" }}>
+            <div style={{ fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 10, textAlign: "center" }}>旅程口袋清單</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {sorted.map((t) => (
                 <Card key={t.code} style={{ padding: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
                   <div onClick={() => onResume(t.code, t.meId)} style={{ flex: 1, minWidth: 0, cursor: "pointer" }}>
@@ -44,11 +50,8 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
             </div>
           </div>
         ) : (
-          <div style={{ maxWidth: 460, margin: "56px auto 0", textAlign: "center" }}>
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 23, color: C.text, letterSpacing: 0.5 }}>唯旅誌｜WIT JOURNAL</div>
-            <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 6, letterSpacing: 1, fontStyle: "italic" }}>Little Trips, Slow Living.</div>
-            <div style={{ fontSize: 13, color: C.textSoft, marginTop: 14 }}>多幣別 · 拍照記錄 · 分帳結算 · 即時同步</div>
-            <div style={{ fontSize: 13, color: C.textSoft, marginTop: 24 }}>還沒有旅程，點左下角「＋」建立或加入一趟旅程吧</div>
+          <div style={{ maxWidth: 460, margin: "24px auto 0", textAlign: "center" }}>
+            <div style={{ fontSize: 13, color: C.textSoft }}>還沒有旅程，點左下角「＋」建立或加入一趟旅程吧</div>
           </div>
         )}
         <div style={{ textAlign: "center", fontSize: 12, color: C.textSoft, marginTop: 14, maxWidth: 420, margin: "14px auto 0" }}>
