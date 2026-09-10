@@ -34,7 +34,7 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {sorted.map((t) => (
                 <Card key={t.code} style={{ padding: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                  <div onClick={() => onResume(t.code, t.meId)} style={{ flex: 1, minWidth: 0, cursor: "pointer" }}>
+                  <div onClick={() => onResume(t.code, t.meId)} style={{ flex: 1, minWidth: 0, cursor: "pointer", paddingLeft: 6 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: C.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</div>
                     <div style={{ fontSize: 12, color: C.textSoft, marginTop: 2 }}>代碼 {t.code}{t.startDate ? ` · ${t.startDate}` : ""}</div>
                   </div>
