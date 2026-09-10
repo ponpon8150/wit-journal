@@ -37,7 +37,7 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
             <Field label="旅程天數"><input className="tl-input" type="number" min="0" value={dayCount} onChange={(e) => setDayCount(e.target.value)} /></Field>
           </div>
         </div>
-        <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: -8, marginBottom: 14 }}>
+        <div style={{ fontSize: 12, color: C.textSoft, marginTop: -8, marginBottom: 14 }}>
           記帳時會依此產生「行前 / DAY1…DAY{dayCount || "N"} / 回國」分頁
         </div>
         <Field label={`旅遊幣別（選填，用來在總覽頁點國旗切換金額顯示；本國幣別為 ${trip.base_currency}）`}>
@@ -52,12 +52,12 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
       <Card>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>旅伴（{members.length}）</div>
-          <button onClick={onAddMember} style={{ background: "none", border: "none", cursor: "pointer", color: C.primary, display: "flex", alignItems: "center", gap: 4, fontSize: 12.5 }}>
+          <button onClick={onAddMember} style={{ background: "none", border: "none", cursor: "pointer", color: C.primary, display: "flex", alignItems: "center", gap: 4, fontSize: 13 }}>
             <Plus size={14} /> 新增
           </button>
         </div>
         {members.length === 0 ? (
-          <div style={{ fontSize: 12.5, color: C.textSoft }}>還沒有旅伴，點右上角新增</div>
+          <div style={{ fontSize: 13, color: C.textSoft }}>還沒有旅伴，點右上角新增</div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {members.map((m) => (
@@ -83,7 +83,7 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
       <Card>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>旅程代碼</div>
-          <button onClick={copyLink} style={{ background: "none", border: "none", cursor: "pointer", color: C.primary, display: "flex", alignItems: "center", gap: 4, fontSize: 12.5 }}>
+          <button onClick={copyLink} style={{ background: "none", border: "none", cursor: "pointer", color: C.primary, display: "flex", alignItems: "center", gap: 4, fontSize: 13 }}>
             <Copy size={13} /> {copied ? "已複製" : "複製連結"}
           </button>
         </div>
@@ -95,7 +95,7 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
 
       {confirmDelete && (
         <Modal title="移除這位旅伴？" onClose={() => setConfirmDelete(null)}>
-          <div style={{ fontSize: 13.5, color: C.text, lineHeight: 1.7, marginBottom: 16 }}>
+          <div style={{ fontSize: 14, color: C.text, lineHeight: 1.7, marginBottom: 16 }}>
             確定要移除 <b>{confirmDelete.name}</b> 嗎？已產生的花費紀錄不會被刪除，但之後不會再出現在分攤名單裡。
           </div>
           <Btn full variant="danger" onClick={() => { onDeleteMember(confirmDelete.id); setConfirmDelete(null); }}>確認移除</Btn>

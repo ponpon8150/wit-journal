@@ -20,7 +20,7 @@ export default function ExpensesView({ trip, members, expenses, onDelete, onEdit
     <div>
       <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 10 }}>
         <button onClick={() => onSelectDay("all")} style={{
-          padding: "7px 13px", borderRadius: 12, whiteSpace: "nowrap", fontSize: 12.5, cursor: "pointer",
+          padding: "7px 13px", borderRadius: 12, whiteSpace: "nowrap", fontSize: 13, cursor: "pointer",
           border: selectedDayId === "all" ? `1.5px solid ${C.accent}` : `1px solid ${C.line}`,
           background: selectedDayId === "all" ? `${C.accent}18` : "#fff", color: selectedDayId === "all" ? C.accent : C.textSoft, fontWeight: 600,
         }}>全部行程</button>
@@ -34,8 +34,8 @@ export default function ExpensesView({ trip, members, expenses, onDelete, onEdit
               background: active ? `${C.accent}18` : "#fff", color: active ? C.accent : C.textSoft,
               display: "flex", flexDirection: "column", alignItems: "center", lineHeight: 1.3,
             }}>
-              <span style={{ fontSize: 12.5, fontWeight: 600 }}>{d.label}</span>
-              <span style={{ fontSize: 9.5, opacity: 0.8 }}>{d.date ? d.date.slice(5) : (total > 0 ? fmt(total, trip.base_currency) : "")}</span>
+              <span style={{ fontSize: 13, fontWeight: 600 }}>{d.label}</span>
+              <span style={{ fontSize: 10, opacity: 0.8 }}>{d.date ? d.date.slice(5) : (total > 0 ? fmt(total, trip.base_currency) : "")}</span>
             </button>
           );
         })}
@@ -67,7 +67,7 @@ export default function ExpensesView({ trip, members, expenses, onDelete, onEdit
       </div>
 
       {sorted.length === 0 ? (
-        <div style={{ textAlign: "center", color: C.textSoft, fontSize: 13.5, padding: "40px 0" }}>還沒有花費紀錄，點右下角「＋」新增第一筆吧</div>
+        <div style={{ textAlign: "center", color: C.textSoft, fontSize: 14, padding: "40px 0" }}>還沒有花費紀錄，點右下角「＋」新增第一筆吧</div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {sorted.map((e) => {
@@ -85,9 +85,9 @@ export default function ExpensesView({ trip, members, expenses, onDelete, onEdit
                   )}
                   <div onClick={() => onEdit(e)} style={{ flex: 1, minWidth: 0, cursor: "pointer" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                      <div style={{ fontSize: 14.5, fontWeight: 600, color: C.text }}>{e.title}</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>{e.title}</div>
                       <div style={{ textAlign: "right" }}>
-                        <div style={{ fontSize: 14.5, fontWeight: 600, color: C.text }}>{fmt(e.amount, e.currency)} {e.currency}</div>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>{fmt(e.amount, e.currency)} {e.currency}</div>
                         {e.currency !== trip.base_currency && (
                           <div style={{ fontSize: 11, color: C.textSoft }}>≈ {fmt(e.amount_base, trip.base_currency)} {trip.base_currency}</div>
                         )}
@@ -97,7 +97,7 @@ export default function ExpensesView({ trip, members, expenses, onDelete, onEdit
                       {memberName(e.payer_id)} 先付 · {new Date(e.occurred_at).toLocaleDateString("zh-TW")} · 由 {(e.participants || []).length} 人分攤
                     </div>
                     {e.note && (
-                      <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <div style={{ fontSize: 12, color: C.textSoft, marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         備註：{e.note.replace(/\n/g, "　")}
                       </div>
                     )}

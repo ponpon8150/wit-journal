@@ -72,7 +72,7 @@ export function Modal({ title, onClose, children, wide }) {
 export function Field({ label, children }) {
   return (
     <div style={{ marginBottom: 14 }}>
-      <div style={{ fontSize: 12.5, color: C.textSoft, marginBottom: 6, fontWeight: 600 }}>{label}</div>
+      <div style={{ fontSize: 13, color: C.textSoft, marginBottom: 6, fontWeight: 600 }}>{label}</div>
       {children}
     </div>
   );

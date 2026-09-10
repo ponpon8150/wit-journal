@@ -148,7 +148,7 @@ export default function AddExpenseModal({ trip, members, onClose, onSave, meId, 
             const active = dayId === d.id;
             return (
               <button key={d.id} onClick={() => setDayId(d.id)} style={{
-                padding: "7px 12px", borderRadius: 10, whiteSpace: "nowrap", fontSize: 12.5, cursor: "pointer",
+                padding: "7px 12px", borderRadius: 10, whiteSpace: "nowrap", fontSize: 13, cursor: "pointer",
                 border: active ? `1.5px solid ${C.primary}` : `1px solid ${C.line}`,
                 background: active ? `${C.primary}18` : "#fff", color: active ? C.primary : C.textSoft, fontWeight: active ? 700 : 500,
               }}>
@@ -188,7 +188,7 @@ export default function AddExpenseModal({ trip, members, onClose, onSave, meId, 
                   套用旅程設定匯率{rateUpdatedAtDisplay ? ` · 更新於 ${rateUpdatedAtDisplay}` : ""}
                 </div>
               </div>
-              <button onClick={openRateOverride} style={{ background: "none", border: "none", color: C.primary, fontSize: 12.5, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>
+              <button onClick={openRateOverride} style={{ background: "none", border: "none", color: C.primary, fontSize: 13, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" }}>
                 調整這筆匯率
               </button>
             </div>
@@ -200,13 +200,13 @@ export default function AddExpenseModal({ trip, members, onClose, onSave, meId, 
                   <RefreshCw size={14} className={rateLoading ? "tl-spin" : ""} /> 即時匯率
                 </Btn>
               </div>
-              {rateNote && <div style={{ fontSize: 11.5, color: rateNote.includes("失敗") ? C.warn : C.textSoft, marginTop: 4 }}>{rateNote}</div>}
+              {rateNote && <div style={{ fontSize: 12, color: rateNote.includes("失敗") ? C.warn : C.textSoft, marginTop: 4 }}>{rateNote}</div>}
               {hasCentralRate ? (
-                <button onClick={useCentralRate} style={{ background: "none", border: "none", color: C.textSoft, fontSize: 11.5, cursor: "pointer", marginTop: 6, textDecoration: "underline" }}>
+                <button onClick={useCentralRate} style={{ background: "none", border: "none", color: C.textSoft, fontSize: 12, cursor: "pointer", marginTop: 6, textDecoration: "underline" }}>
                   改用旅程設定匯率（1 {currency} = {centralRate}）
                 </button>
               ) : (
-                <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 6 }}>
+                <div style={{ fontSize: 12, color: C.textSoft, marginTop: 6 }}>
                   此幣別尚未設定匯率，儲存後會加入「旅伴頁 → 幣別匯率」方便下次自動套用
                 </div>
               )}
@@ -238,12 +238,12 @@ export default function AddExpenseModal({ trip, members, onClose, onSave, meId, 
             );
           })}
         </div>
-        <div style={{ fontSize: 11.5, color: catMeta(category).color, marginTop: 6, fontWeight: 600 }}>已選擇：{catMeta(category).label}</div>
+        <div style={{ fontSize: 12, color: catMeta(category).color, marginTop: 6, fontWeight: 600 }}>已選擇：{catMeta(category).label}</div>
       </Field>
 
       <Field label="分攤方式">
         {splitType !== "self" && (
-          <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: -4, marginBottom: 8 }}>取消勾選代表該旅伴這筆花費不需分擔</div>
+          <div style={{ fontSize: 12, color: C.textSoft, marginTop: -4, marginBottom: 8 }}>取消勾選代表該旅伴這筆花費不需分擔</div>
         )}
         <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
           {[["self", "自己出錢"], ["equal", "平均分攤"], ["custom", "自訂金額"]].map(([k, l]) => (
@@ -281,7 +281,7 @@ export default function AddExpenseModal({ trip, members, onClose, onSave, meId, 
                       <span style={{ fontSize: 14 }}>{m.name}</span>
                     </div>
                     {checked && splitType === "equal" && (
-                      <span style={{ fontSize: 12.5, color: C.textSoft }}>{fmt(equalShare, currency)} {currency}</span>
+                      <span style={{ fontSize: 13, color: C.textSoft }}>{fmt(equalShare, currency)} {currency}</span>
                     )}
                     {checked && splitType === "custom" && (
                       <input className="tl-input" style={{ width: 90, height: 36 }} type="number" placeholder="0"
@@ -330,8 +330,8 @@ export default function AddExpenseModal({ trip, members, onClose, onSave, meId, 
               className="tl-textarea" style={{ width: "100%", minHeight: 110 }}
               placeholder="輸入細節或特別備註…（拍照後會自動帶入辨識到的文字）" value={note} onChange={(e) => setNote(e.target.value)}
             />
-            {ocrLoading && <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 6 }}>辨識中，將自動帶入文字…</div>}
-            {ocrError && <div style={{ fontSize: 11.5, color: C.warn, marginTop: 6 }}>{ocrError}</div>}
+            {ocrLoading && <div style={{ fontSize: 12, color: C.textSoft, marginTop: 6 }}>辨識中，將自動帶入文字…</div>}
+            {ocrError && <div style={{ fontSize: 12, color: C.warn, marginTop: 6 }}>{ocrError}</div>}
           </div>
         </div>
       </Field>

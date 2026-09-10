@@ -96,7 +96,7 @@ export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, on
 
       <div style={{ fontSize: 12, color: C.textSoft, marginBottom: 12 }}>私人清單，只存在你這台裝置；勾選「已購買」直接記錄花了多少</div>
       {groups.length === 0 ? (
-        <div style={{ textAlign: "center", color: C.textSoft, fontSize: 13.5, padding: "40px 0" }}>還沒有代購清單，點右下角「＋」新增第一項吧</div>
+        <div style={{ textAlign: "center", color: C.textSoft, fontSize: 14, padding: "40px 0" }}>還沒有代購清單，點右下角「＋」新增第一項吧</div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {groups.map((g) => {
@@ -113,7 +113,7 @@ export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, on
                     </button>
                   </div>
                   <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: 11.5, color: C.textSoft }}>{boughtCount}/{g.items.length} 已購買</div>
+                    <div style={{ fontSize: 12, color: C.textSoft }}>{boughtCount}/{g.items.length} 已購買</div>
                     {groupTotal > 0 && <div style={{ fontSize: 12, color: "#5F9179", fontWeight: 600 }}>{fmt(groupTotal, trip.base_currency)} {trip.base_currency}</div>}
                   </div>
                 </div>
@@ -142,7 +142,7 @@ export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, on
                           {it.purchase && (
                             <div style={{ marginTop: 4 }}>
                               <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                                <span style={{ fontSize: 11.5, color: C.success, fontWeight: 600 }}>
+                                <span style={{ fontSize: 12, color: C.success, fontWeight: 600 }}>
                                   已花費 {fmt(it.purchase.amount, it.purchase.currency)} {it.purchase.currency}
                                   {it.purchase.currency !== trip.base_currency && ` (≈ ${fmt(it.purchase.amountBase, trip.base_currency)} ${trip.base_currency})`}
                                 </span>

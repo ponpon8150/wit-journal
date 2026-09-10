@@ -25,7 +25,7 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
       <div style={{ padding: "0 20px", marginTop: -36, position: "relative" }}>
         <div style={{ maxWidth: 460, margin: "60px auto 0", textAlign: "center" }}>
           <div style={{ fontFamily: FONT_DISPLAY, fontSize: 23, fontWeight: 700, color: C.text, letterSpacing: 0.5 }}>唯 旅誌｜WIT JOURNAL</div>
-          <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 8, letterSpacing: 1, fontStyle: "italic" }}>Little Trips, Slow Living.</div>
+          <div style={{ fontSize: 12, color: C.textSoft, marginTop: 8, letterSpacing: 1, fontStyle: "italic" }}>Little Trips, Slow Living.</div>
         </div>
 
         {sorted.length > 0 ? (
@@ -35,8 +35,8 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
               {sorted.map((t) => (
                 <Card key={t.code} style={{ padding: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
                   <div onClick={() => onResume(t.code, t.meId)} style={{ flex: 1, minWidth: 0, cursor: "pointer" }}>
-                    <div style={{ fontSize: 14.5, fontWeight: 600, color: C.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</div>
-                    <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 2 }}>代碼 {t.code}{t.startDate ? ` · ${t.startDate}` : ""}</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: C.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</div>
+                    <div style={{ fontSize: 12, color: C.textSoft, marginTop: 2 }}>代碼 {t.code}{t.startDate ? ` · ${t.startDate}` : ""}</div>
                   </div>
                   <button onClick={() => onResume(t.code, t.meId)} style={{ background: "none", border: "none", cursor: "pointer", color: C.primary, flexShrink: 0, display: "flex" }}>
                     <ChevronRight size={18} />
@@ -64,7 +64,7 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
         </div>
 
         {initialJoinCode && !myTrips.some((t) => t.code === initialJoinCode) && (
-          <div style={{ textAlign: "center", fontSize: 12.5, color: C.primary, marginTop: 20, fontWeight: 600 }}>
+          <div style={{ textAlign: "center", fontSize: 13, color: C.primary, marginTop: 20, fontWeight: 600 }}>
             偵測到旅程代碼 {initialJoinCode}，請輸入你的名字加入
           </div>
         )}
@@ -84,7 +84,7 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
             {[["create", "建立新旅程"], ["join", "加入旅程"]].map(([k, label]) => (
               <button key={k} onClick={() => { setMode(k); setErr(""); }} style={{
                 flex: 1, padding: "9px 0", borderRadius: 10, border: "none", cursor: "pointer",
-                fontWeight: 600, fontSize: 13.5, fontFamily: FONT_BODY,
+                fontWeight: 600, fontSize: 14, fontFamily: FONT_BODY,
                 background: mode === k ? C.surface : "transparent",
                 color: mode === k ? C.primary : C.textSoft,
                 boxShadow: mode === k ? "0 1px 4px rgba(0,0,0,0.06)" : "none",
@@ -119,7 +119,7 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
                   </Field>
                 </div>
               </div>
-              <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: -8, marginBottom: 14 }}>
+              <div style={{ fontSize: 12, color: C.textSoft, marginTop: -8, marginBottom: 14 }}>
                 將自動產生「行前 / DAY1…DAY{dayCount || "N"} / 回國」分頁，方便依天數記帳
               </div>
               <Field label="你的名字">
@@ -149,7 +149,7 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
 
       {confirmRemove && (
         <Modal title="移除這趟旅程的紀錄？" onClose={() => setConfirmRemove(null)}>
-          <div style={{ fontSize: 13.5, color: C.text, lineHeight: 1.7, marginBottom: 16 }}>
+          <div style={{ fontSize: 14, color: C.text, lineHeight: 1.7, marginBottom: 16 }}>
             只會清除這台裝置對「<b>{confirmRemove.name}</b>」的本機記憶，旅程本身、花費紀錄都還在雲端。之後可以用旅程代碼＋原本的名字重新加入。
           </div>
           <Btn full variant="danger" onClick={() => { onRemoveTrip(confirmRemove.code); setConfirmRemove(null); }}>確認移除</Btn>

@@ -54,11 +54,11 @@ export default function RateManagerCard({ trip, onUpdateRate }) {
   return (
     <Card>
       <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4, color: C.text }}>幣別匯率</div>
-      <div style={{ fontSize: 11.5, color: C.textSoft, marginBottom: 12 }}>
+      <div style={{ fontSize: 12, color: C.textSoft, marginBottom: 12 }}>
         設定一次，記帳時自動套用；主幣別 {trip.base_currency} 不需設定
       </div>
       {currencies.length === 0 ? (
-        <div style={{ fontSize: 12.5, color: C.textSoft }}>尚未使用其他幣別，記帳時會自動加入這裡</div>
+        <div style={{ fontSize: 13, color: C.textSoft }}>尚未使用其他幣別，記帳時會自動加入這裡</div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {currencies.map((cur) => (
@@ -78,11 +78,11 @@ export default function RateManagerCard({ trip, onUpdateRate }) {
                 </button>
               </div>
               {notes[cur] ? (
-                <div style={{ fontSize: 10.5, color: notes[cur].error ? C.warn : C.success, marginLeft: 54, marginTop: 2 }}>
+                <div style={{ fontSize: 11, color: notes[cur].error ? C.warn : C.success, marginLeft: 54, marginTop: 2 }}>
                   {notes[cur].text}
                 </div>
               ) : trip.rate_updated_at?.[cur] ? (
-                <div style={{ fontSize: 10.5, color: C.textSoft, marginLeft: 54, marginTop: 2 }}>
+                <div style={{ fontSize: 11, color: C.textSoft, marginLeft: 54, marginTop: 2 }}>
                   更新於 {new Date(trip.rate_updated_at[cur]).toLocaleDateString("zh-TW")}
                 </div>
               ) : null}

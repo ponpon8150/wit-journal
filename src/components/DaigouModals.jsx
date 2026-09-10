@@ -91,8 +91,8 @@ export function AddDaigouItemModal({ editingItem, presetTargetName, previousTarg
           <div style={{ flex: 1 }}>
             <textarea className="tl-textarea" style={{ width: "100%", minHeight: 110 }}
               placeholder="輸入細節或特別備註…（拍照後會自動帶入辨識到的文字）" value={note} onChange={(e) => setNote(e.target.value)} />
-            {ocrLoading && <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 6 }}>辨識中，將自動帶入文字…</div>}
-            {ocrError && <div style={{ fontSize: 11.5, color: C.warn, marginTop: 6 }}>{ocrError}</div>}
+            {ocrLoading && <div style={{ fontSize: 12, color: C.textSoft, marginTop: 6 }}>辨識中，將自動帶入文字…</div>}
+            {ocrError && <div style={{ fontSize: 12, color: C.warn, marginTop: 6 }}>{ocrError}</div>}
           </div>
         </div>
       </Field>
@@ -215,8 +215,8 @@ export function DaigouPurchaseModal({ trip, item, onClose, onSave }) {
           <div style={{ flex: 1 }}>
             <textarea className="tl-textarea" style={{ width: "100%", minHeight: 110 }}
               placeholder="輸入細節或特別備註…（拍照後會自動帶入辨識到的文字）" value={note} onChange={(e) => setNote(e.target.value)} />
-            {ocrLoading && <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 6 }}>辨識中，將自動帶入文字…</div>}
-            {ocrError && <div style={{ fontSize: 11.5, color: C.warn, marginTop: 6 }}>{ocrError}</div>}
+            {ocrLoading && <div style={{ fontSize: 12, color: C.textSoft, marginTop: 6 }}>辨識中，將自動帶入文字…</div>}
+            {ocrError && <div style={{ fontSize: 12, color: C.warn, marginTop: 6 }}>{ocrError}</div>}
           </div>
         </div>
       </Field>

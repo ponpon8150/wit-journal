@@ -84,17 +84,17 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
             )}
           </div>
         </div>
-        <div style={{ fontSize: 12.5, opacity: 0.8, marginTop: 2, textAlign: "right", paddingRight: 26 }}>共 {expenses.length} 筆紀錄 · {members.length} 位旅伴</div>
+        <div style={{ fontSize: 13, opacity: 0.8, marginTop: 2, textAlign: "right", paddingRight: 26 }}>共 {expenses.length} 筆紀錄 · {members.length} 位旅伴</div>
         {meId && (
           <div style={{ display: "flex", marginTop: 10, paddingTop: 10, borderTop: "1px solid rgba(255,255,255,0.28)" }}>
             <div style={{ flex: 1, textAlign: "center" }}>
               <div style={{ fontSize: 11, opacity: 0.85 }}>我先墊付了</div>
-              <div style={{ fontSize: 18, fontWeight: 600, marginTop: 2 }}>{convert(myPaid) == null ? "—" : fmt(convert(myPaid), displayCurrency)}</div>
+              <div style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>{convert(myPaid) == null ? "—" : fmt(convert(myPaid), displayCurrency)}</div>
             </div>
             <div style={{ width: 1, background: "rgba(255,255,255,0.28)", margin: "0 14px" }} />
             <div style={{ flex: 1, textAlign: "center" }}>
               <div style={{ fontSize: 11, opacity: 0.85 }}>我的總花費</div>
-              <div style={{ fontSize: 18, fontWeight: 600, marginTop: 2 }}>{convert(myShare) == null ? "—" : fmt(convert(myShare), displayCurrency)}</div>
+              <div style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>{convert(myShare) == null ? "—" : fmt(convert(myShare), displayCurrency)}</div>
             </div>
           </div>
         )}
@@ -124,7 +124,7 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
               )}
             </div>
           </div>
-          <div style={{ fontSize: 12.5, opacity: 0.85, marginTop: 4, textAlign: "right", paddingRight: 26 }}>共 {daigouItems.length} 項清單 · {daigouBoughtCount} 項已購買</div>
+          <div style={{ fontSize: 13, opacity: 0.85, marginTop: 4, textAlign: "right", paddingRight: 26 }}>共 {daigouItems.length} 項清單 · {daigouBoughtCount} 項已購買</div>
           {daigouTotal > 0 && (
             <div style={{ display: "flex", marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.28)" }}>
               <div style={{ flex: 1 }}>
@@ -155,8 +155,8 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
                 </PieChart>
               </ResponsiveContainer>
               <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
-                <div style={{ fontSize: 9, color: C.textSoft }}>合計</div>
-                <div style={{ fontSize: 12.5, fontWeight: 600, color: C.text }}>{fmt(totalBase, trip.base_currency)}</div>
+                <div style={{ fontSize: 10, color: C.textSoft }}>合計</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{fmt(totalBase, trip.base_currency)}</div>
               </div>
             </div>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 9 }}>

@@ -66,14 +66,14 @@ export default function SettlementView({ trip, members, balances, settlements, o
           <button onClick={() => setDisplayCurrency(travelCurrency)} title={`顯示為 ${travelCurrency}`} style={flagBtnStyle(displayCurrency === travelCurrency)}>
             {flagFor(travelCurrency)}
           </button>
-          {!travelRate && <span style={{ fontSize: 11.5, color: C.textSoft }}>正在查詢 {travelCurrency} 匯率…</span>}
+          {!travelRate && <span style={{ fontSize: 12, color: C.textSoft }}>正在查詢 {travelCurrency} 匯率…</span>}
         </div>
       )}
       {frozen ? (
         <Card>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
             <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>總結算清單</div>
-            <button onClick={onUnfreeze} style={{ background: "none", border: "none", cursor: "pointer", color: C.textSoft, fontSize: 11.5, whiteSpace: "nowrap" }}>解除總結算</button>
+            <button onClick={onUnfreeze} style={{ background: "none", border: "none", cursor: "pointer", color: C.textSoft, fontSize: 12, whiteSpace: "nowrap" }}>解除總結算</button>
           </div>
           <div style={{ fontSize: 12, color: C.textSoft, marginBottom: 12 }}>
             已於 {new Date(frozen.frozenAt).toLocaleString("zh-TW")} 凍結金額，之後的還款只會扣減這張清單，不會重新配對對象
@@ -92,7 +92,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
                     padding: "10px 12px", opacity: settled ? 0.55 : 1,
                   }}>
                     <div style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13.5, flexWrap: "wrap" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, flexWrap: "wrap" }}>
                         <Avatar name={memberName(line.from)} idx={memberIdx(line.from)} size={24} />
                         <span style={{ fontWeight: 600, textDecoration: settled ? "line-through" : "none" }}>{memberName(line.from)}</span>
                         {line.from === meId && <Tag label="我" color={C.primary} />}
@@ -133,7 +133,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {suggestions.map((s, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.bg, borderRadius: 14, padding: "10px 12px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13.5, flexWrap: "wrap" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, flexWrap: "wrap" }}>
                     <Avatar name={memberName(s.from)} idx={memberIdx(s.from)} size={24} />
                     <span style={{ fontWeight: 600 }}>{memberName(s.from)}</span>
                     {s.from === meId && <Tag label="我" color={C.primary} />}
@@ -151,7 +151,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
             </div>
           )}
           <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${C.line}` }}>
-            <div style={{ fontSize: 11.5, color: C.textSoft, marginBottom: 8 }}>回國正式結清了嗎？按下去把金額凍結，之後就找他/她討錢囉</div>
+            <div style={{ fontSize: 12, color: C.textSoft, marginBottom: 8 }}>回國正式結清了嗎？按下去把金額凍結，之後就找他/她討錢囉</div>
             <Btn variant="ghost" full onClick={() => setConfirmFinalize(true)}>旅程總結算</Btn>
           </div>
         </Card>
@@ -181,7 +181,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
 
       {confirmFinalize && (
         <Modal title="旅程總結算？" onClose={() => setConfirmFinalize(false)}>
-          <div style={{ fontSize: 13.5, color: C.text, lineHeight: 1.7, marginBottom: 16 }}>
+          <div style={{ fontSize: 14, color: C.text, lineHeight: 1.7, marginBottom: 16 }}>
             將凍結目前 {suggestions.length} 筆結算建議，之後還款只扣減對應金額，不再重新配對。可隨時「解除總結算」復原。
           </div>
           <Btn full onClick={() => { onFinalize(suggestions); setConfirmFinalize(false); }}>確認凍結，完成總結算</Btn>

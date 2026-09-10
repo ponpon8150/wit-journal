@@ -379,7 +379,7 @@ export default function App() {
       <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT_BODY, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
         <div style={{ maxWidth: 420, textAlign: "center" }}>
           <div style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: C.text, marginBottom: 10 }}>尚未設定 Supabase</div>
-          <div style={{ fontSize: 13.5, color: C.textSoft, lineHeight: 1.8 }}>
+          <div style={{ fontSize: 14, color: C.textSoft, lineHeight: 1.8 }}>
             請在專案根目錄建立 <code>.env</code> 檔（可參考 <code>.env.example</code>），填入 <code>VITE_SUPABASE_URL</code> 與 <code>VITE_SUPABASE_ANON_KEY</code>，儲存後重新啟動網頁即可。
           </div>
         </div>
@@ -411,7 +411,7 @@ export default function App() {
         {loadError ? (
           <>
             <div style={{ fontSize: 14, color: C.danger, textAlign: "center" }}>{loadError}</div>
-            <button onClick={leaveTrip} style={{ background: "none", border: "none", color: C.primary, cursor: "pointer", fontSize: 13.5, fontWeight: 600 }}>返回旅程列表</button>
+            <button onClick={leaveTrip} style={{ background: "none", border: "none", color: C.primary, cursor: "pointer", fontSize: 14, fontWeight: 600 }}>返回旅程列表</button>
           </>
         ) : (
           <>
@@ -502,7 +502,7 @@ export default function App() {
                 }}>
                   <Icon size={24} color={active ? C.primary : C.textSoft} strokeWidth={2.2} />
                 </div>
-                <span style={{ fontSize: 10.5, fontWeight: active ? 700 : 600, marginTop: 2 }}>{t.label}</span>
+                <span style={{ fontSize: 11, fontWeight: active ? 700 : 600, marginTop: 2 }}>{t.label}</span>
               </button>
             );
           }
@@ -512,7 +512,7 @@ export default function App() {
               alignItems: "center", gap: 3, padding: "4px 10px", color: active ? C.primary : C.textSoft, flex: 1,
             }}>
               <Icon size={20} strokeWidth={active ? 2.4 : 1.8} />
-              <span style={{ fontSize: 10.5, fontWeight: active ? 700 : 500 }}>{t.label}</span>
+              <span style={{ fontSize: 11, fontWeight: active ? 700 : 500 }}>{t.label}</span>
             </button>
           );
         })}
