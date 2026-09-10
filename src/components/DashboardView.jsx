@@ -104,20 +104,36 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
           <div style={{ fontSize: 13, opacity: 0.9, display: "flex", alignItems: "center", gap: 6 }}>
             <Gift size={14} /> 代購總花費
           </div>
-          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30, marginTop: 4, textAlign: "right", paddingRight: 26 }}>
-            {fmt(daigouTotal, trip.base_currency)} <span style={{ fontSize: 14 }}>{trip.base_currency}</span>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: travelCurrency ? "space-between" : "flex-end", marginTop: 4, paddingRight: 26 }}>
+            {travelCurrency && (
+              <div style={{ display: "flex", gap: 6 }}>
+                <button onClick={() => setDisplayCurrency(trip.base_currency)} title={`顯示為 ${trip.base_currency}`} style={flagBtnStyle(displayCurrency === trip.base_currency)}>
+                  {flagFor(trip.base_currency)}
+                </button>
+                <button onClick={() => setDisplayCurrency(travelCurrency)} title={`顯示為 ${travelCurrency}`} style={flagBtnStyle(displayCurrency === travelCurrency)}>
+                  {flagFor(travelCurrency)}
+                </button>
+              </div>
+            )}
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30 }}>
+              {convert(daigouTotal) == null ? (
+                <span style={{ fontSize: 13, opacity: 0.85 }}>查詢匯率中…</span>
+              ) : (
+                <>{fmt(convert(daigouTotal), displayCurrency)} <span style={{ fontSize: 14 }}>{displayCurrency}</span></>
+              )}
+            </div>
           </div>
           <div style={{ fontSize: 12.5, opacity: 0.85, marginTop: 4, textAlign: "right", paddingRight: 26 }}>共 {daigouItems.length} 項清單 · {daigouBoughtCount} 項已購買</div>
           {daigouTotal > 0 && (
             <div style={{ display: "flex", marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.28)" }}>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 11, opacity: 0.85 }}>已收款</div>
-                <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{fmt(daigouCollected, trip.base_currency)}</div>
+                <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{convert(daigouCollected) == null ? "—" : fmt(convert(daigouCollected), displayCurrency)}</div>
               </div>
               <div style={{ width: 1, background: "rgba(255,255,255,0.28)", margin: "0 14px" }} />
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 11, opacity: 0.85 }}>未收款</div>
-                <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{fmt(daigouPending, trip.base_currency)}</div>
+                <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{convert(daigouPending) == null ? "—" : fmt(convert(daigouPending), displayCurrency)}</div>
               </div>
             </div>
           )}

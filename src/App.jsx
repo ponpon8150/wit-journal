@@ -457,6 +457,7 @@ export default function App() {
             onUnmarkBought={handleUnmarkBought}
             onToggleCollected={handleToggleCollected}
             onAddForTarget={openAddDaigouItem}
+            onUpdateRate={handleUpdateRate}
           />
         )}
         {activeTab === "members" && (

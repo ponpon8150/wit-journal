@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Gift, Plus, Check, Pencil, Trash2 } from "lucide-react";
-import { C, FONT_DISPLAY, fmt } from "../lib/helpers";
+import { C, FONT_DISPLAY, fmt, flagFor, fetchLiveRate } from "../lib/helpers";
 import { Card, Avatar } from "./ui";
 
-export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, onOpenPurchase, onUnmarkBought, onToggleCollected, onAddForTarget }) {
+export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, onOpenPurchase, onUnmarkBought, onToggleCollected, onAddForTarget, onUpdateRate }) {
   const [zoomPhoto, setZoomPhoto] = useState(null);
 
   const groups = useMemo(() => {
@@ -20,24 +20,74 @@ export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, on
   const pendingTotal = myTotal - collectedTotal;
   const boughtTotalCount = daigouItems.filter((it) => it.bought).length;
 
+  // 旅遊幣別：可切換這張卡片金額顯示的幣別（邏輯跟總覽頁的國旗切換一致）
+  const travelCurrency = trip.travel_currency && trip.travel_currency !== trip.base_currency ? trip.travel_currency : null;
+  const [displayCurrency, setDisplayCurrency] = useState(trip.base_currency);
+
+  useEffect(() => {
+    setDisplayCurrency(trip.base_currency);
+  }, [trip.code, trip.base_currency]);
+
+  useEffect(() => {
+    if (!travelCurrency || trip.rates?.[travelCurrency] != null || !onUpdateRate) return;
+    let cancelled = false;
+    fetchLiveRate(travelCurrency, trip.base_currency)
+      .then(({ rate }) => {
+        if (!cancelled) onUpdateRate(travelCurrency, Math.round(rate * 10000) / 10000);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [travelCurrency, trip.base_currency, trip.rates, onUpdateRate]);
+
+  const travelRate = travelCurrency ? trip.rates?.[travelCurrency] : null;
+  const convert = (amountBase) => {
+    if (displayCurrency === trip.base_currency) return amountBase;
+    if (!travelRate) return null;
+    return amountBase / travelRate;
+  };
+  const flagBtnStyle = (active) => ({
+    width: 28, height: 28, borderRadius: "50%", padding: 0, cursor: "pointer", fontSize: 14,
+    display: "flex", alignItems: "center", justifyContent: "center",
+    border: active ? "2px solid #fff" : "2px solid rgba(255,255,255,0.35)",
+    background: active ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.1)",
+  });
+
   return (
     <div>
       <Card style={{ background: `linear-gradient(135deg, #8AB89E, #A9D0BC)`, color: "#fff", marginBottom: 14 }}>
         <div style={{ fontSize: 13, opacity: 0.9, display: "flex", alignItems: "center", gap: 6 }}>
           <Gift size={14} /> 代購總花費
         </div>
-        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30, marginTop: 4, textAlign: "right", paddingRight: 26 }}>{fmt(myTotal, trip.base_currency)} <span style={{ fontSize: 14 }}>{trip.base_currency}</span></div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: travelCurrency ? "space-between" : "flex-end", marginTop: 4, paddingRight: 26 }}>
+          {travelCurrency && (
+            <div style={{ display: "flex", gap: 6 }}>
+              <button onClick={() => setDisplayCurrency(trip.base_currency)} title={`顯示為 ${trip.base_currency}`} style={flagBtnStyle(displayCurrency === trip.base_currency)}>
+                {flagFor(trip.base_currency)}
+              </button>
+              <button onClick={() => setDisplayCurrency(travelCurrency)} title={`顯示為 ${travelCurrency}`} style={flagBtnStyle(displayCurrency === travelCurrency)}>
+                {flagFor(travelCurrency)}
+              </button>
+            </div>
+          )}
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30 }}>
+            {convert(myTotal) == null ? (
+              <span style={{ fontSize: 13, opacity: 0.85 }}>查詢匯率中…</span>
+            ) : (
+              <>{fmt(convert(myTotal), displayCurrency)} <span style={{ fontSize: 14 }}>{displayCurrency}</span></>
+            )}
+          </div>
+        </div>
         <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4, textAlign: "right", paddingRight: 26 }}>共 {daigouItems.length} 項清單 · {boughtTotalCount} 項已購買</div>
         {myTotal > 0 && (
           <div style={{ display: "flex", marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.28)" }}>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 11, opacity: 0.85 }}>已收款</div>
-              <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{fmt(collectedTotal, trip.base_currency)}</div>
+              <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{convert(collectedTotal) == null ? "—" : fmt(convert(collectedTotal), displayCurrency)}</div>
             </div>
             <div style={{ width: 1, background: "rgba(255,255,255,0.28)", margin: "0 14px" }} />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 11, opacity: 0.85 }}>未收款</div>
-              <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{fmt(pendingTotal, trip.base_currency)}</div>
+              <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{convert(pendingTotal) == null ? "—" : fmt(convert(pendingTotal), displayCurrency)}</div>
             </div>
           </div>
         )}
