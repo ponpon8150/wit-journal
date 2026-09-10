@@ -59,7 +59,7 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
             把這個網頁連結和旅程代碼分享給旅伴，大家就能一起即時記帳
           </div>
           <div style={{ fontSize: 13, color: C.textSoft, marginTop: 18 }}>
-            多幣別 · 拍照記錄 · 分帳結算 · 即時同步
+            &lt;多幣別 · 拍照記錄 · 分帳結算 · 即時同步&gt;
           </div>
         </div>
 
