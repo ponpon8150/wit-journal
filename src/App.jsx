@@ -430,7 +430,7 @@ export default function App() {
       <div style={{ position: "sticky", top: 0, zIndex: 20, background: C.surface, borderBottom: `1px solid ${C.line}`, padding: "14px 18px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: C.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{trip.name}</div>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, fontWeight: 700, color: C.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{trip.name}</div>
             <div style={{ fontSize: 11, color: C.textSoft, marginTop: 1 }}>代碼 {trip.code} · {trip.base_currency} · 即時同步中</div>
           </div>
           <span style={{ width: 8, height: 8, borderRadius: "50%", background: C.success, flexShrink: 0 }} title="即時同步中" />
