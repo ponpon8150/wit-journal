@@ -24,18 +24,18 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
       <HorizonBanner />
       <div style={{ padding: "0 20px", marginTop: -36, position: "relative" }}>
         <div style={{ maxWidth: 460, margin: "60px auto 0", textAlign: "center" }}>
-          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 23, color: C.text, letterSpacing: 0.5 }}>唯旅誌｜WIT JOURNAL</div>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 23, fontWeight: 700, color: C.text, letterSpacing: 0.5 }}>唯 旅誌｜WIT JOURNAL</div>
           <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 8, letterSpacing: 1, fontStyle: "italic" }}>Little Trips, Slow Living.</div>
         </div>
 
         {sorted.length > 0 ? (
           <div style={{ maxWidth: 460, margin: "40px auto 0" }}>
-            <div style={{ fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 14, textAlign: "center" }}>旅程口袋清單</div>
+            <div style={{ fontSize: 18, fontWeight: 600, color: C.text, marginBottom: 14, textAlign: "center" }}>旅程口袋清單</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {sorted.map((t) => (
                 <Card key={t.code} style={{ padding: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
                   <div onClick={() => onResume(t.code, t.meId)} style={{ flex: 1, minWidth: 0, cursor: "pointer" }}>
-                    <div style={{ fontSize: 14.5, fontWeight: 700, color: C.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</div>
+                    <div style={{ fontSize: 14.5, fontWeight: 600, color: C.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</div>
                     <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 2 }}>代碼 {t.code}{t.startDate ? ` · ${t.startDate}` : ""}</div>
                   </div>
                   <button onClick={() => onResume(t.code, t.meId)} style={{ background: "none", border: "none", cursor: "pointer", color: C.primary, flexShrink: 0, display: "flex" }}>
@@ -79,7 +79,7 @@ export default function Landing({ myTrips, onCreate, onJoin, onResume, onRemoveT
       </button>
 
       {showEntryModal && (
-        <Modal title="唯旅誌｜WIT JOURNAL" onClose={() => setShowEntryModal(false)}>
+        <Modal title="唯 旅誌｜WIT JOURNAL" onClose={() => setShowEntryModal(false)}>
           <div style={{ display: "flex", background: C.surfaceAlt, borderRadius: 14, padding: 4, marginBottom: 18 }}>
             {[["create", "建立新旅程"], ["join", "加入旅程"]].map(([k, label]) => (
               <button key={k} onClick={() => { setMode(k); setErr(""); }} style={{

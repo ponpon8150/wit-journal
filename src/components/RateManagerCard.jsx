@@ -53,7 +53,7 @@ export default function RateManagerCard({ trip, onUpdateRate }) {
 
   return (
     <Card>
-      <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, color: C.text }}>幣別匯率</div>
+      <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4, color: C.text }}>幣別匯率</div>
       <div style={{ fontSize: 11.5, color: C.textSoft, marginBottom: 12 }}>
         設定一次，記帳時自動套用；主幣別 {trip.base_currency} 不需設定
       </div>
@@ -64,7 +64,7 @@ export default function RateManagerCard({ trip, onUpdateRate }) {
           {currencies.map((cur) => (
             <div key={cur}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <div style={{ width: 46, fontSize: 13, fontWeight: 700, color: C.text, flexShrink: 0 }}>{cur}</div>
+                <div style={{ width: 46, fontSize: 13, fontWeight: 600, color: C.text, flexShrink: 0 }}>{cur}</div>
                 <span style={{ fontSize: 12, color: C.textSoft, flexShrink: 0 }}>=</span>
                 <input
                   className="tl-input" style={{ flex: 1 }} type="number" step="0.0001"

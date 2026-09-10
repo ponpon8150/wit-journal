@@ -22,7 +22,7 @@ export default function ExpensesView({ trip, members, expenses, onDelete, onEdit
         <button onClick={() => onSelectDay("all")} style={{
           padding: "7px 13px", borderRadius: 12, whiteSpace: "nowrap", fontSize: 12.5, cursor: "pointer",
           border: selectedDayId === "all" ? `1.5px solid ${C.accent}` : `1px solid ${C.line}`,
-          background: selectedDayId === "all" ? `${C.accent}18` : "#fff", color: selectedDayId === "all" ? C.accent : C.textSoft, fontWeight: 700,
+          background: selectedDayId === "all" ? `${C.accent}18` : "#fff", color: selectedDayId === "all" ? C.accent : C.textSoft, fontWeight: 600,
         }}>全部行程</button>
         {days.map((d) => {
           const active = selectedDayId === d.id;
@@ -34,7 +34,7 @@ export default function ExpensesView({ trip, members, expenses, onDelete, onEdit
               background: active ? `${C.accent}18` : "#fff", color: active ? C.accent : C.textSoft,
               display: "flex", flexDirection: "column", alignItems: "center", lineHeight: 1.3,
             }}>
-              <span style={{ fontSize: 12.5, fontWeight: 700 }}>{d.label}</span>
+              <span style={{ fontSize: 12.5, fontWeight: 600 }}>{d.label}</span>
               <span style={{ fontSize: 9.5, opacity: 0.8 }}>{d.date ? d.date.slice(5) : (total > 0 ? fmt(total, trip.base_currency) : "")}</span>
             </button>
           );
@@ -85,9 +85,9 @@ export default function ExpensesView({ trip, members, expenses, onDelete, onEdit
                   )}
                   <div onClick={() => onEdit(e)} style={{ flex: 1, minWidth: 0, cursor: "pointer" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                      <div style={{ fontSize: 14.5, fontWeight: 700, color: C.text }}>{e.title}</div>
+                      <div style={{ fontSize: 14.5, fontWeight: 600, color: C.text }}>{e.title}</div>
                       <div style={{ textAlign: "right" }}>
-                        <div style={{ fontSize: 14.5, fontWeight: 700, color: C.text }}>{fmt(e.amount, e.currency)} {e.currency}</div>
+                        <div style={{ fontSize: 14.5, fontWeight: 600, color: C.text }}>{fmt(e.amount, e.currency)} {e.currency}</div>
                         {e.currency !== trip.base_currency && (
                           <div style={{ fontSize: 11, color: C.textSoft }}>≈ {fmt(e.amount_base, trip.base_currency)} {trip.base_currency}</div>
                         )}

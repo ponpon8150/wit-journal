@@ -37,7 +37,8 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
     return amountBase / travelRate;
   };
   const flagBtnStyle = (active) => ({
-    width: 28, height: 28, borderRadius: "50%", padding: 0, cursor: "pointer", fontSize: 14,
+    width: 32, height: 32, borderRadius: "50%", padding: 0, cursor: "pointer", fontSize: 15,
+    lineHeight: 1, fontWeight: 700, boxSizing: "border-box", flexShrink: 0,
     display: "flex", alignItems: "center", justifyContent: "center",
     border: active ? "2px solid #fff" : "2px solid rgba(255,255,255,0.35)",
     background: active ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.1)",
@@ -88,12 +89,12 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
           <div style={{ display: "flex", marginTop: 10, paddingTop: 10, borderTop: "1px solid rgba(255,255,255,0.28)" }}>
             <div style={{ flex: 1, textAlign: "center" }}>
               <div style={{ fontSize: 11, opacity: 0.85 }}>我先墊付了</div>
-              <div style={{ fontSize: 18, fontWeight: 700, marginTop: 2 }}>{convert(myPaid) == null ? "—" : fmt(convert(myPaid), displayCurrency)}</div>
+              <div style={{ fontSize: 18, fontWeight: 600, marginTop: 2 }}>{convert(myPaid) == null ? "—" : fmt(convert(myPaid), displayCurrency)}</div>
             </div>
             <div style={{ width: 1, background: "rgba(255,255,255,0.28)", margin: "0 14px" }} />
             <div style={{ flex: 1, textAlign: "center" }}>
               <div style={{ fontSize: 11, opacity: 0.85 }}>我的總花費</div>
-              <div style={{ fontSize: 18, fontWeight: 700, marginTop: 2 }}>{convert(myShare) == null ? "—" : fmt(convert(myShare), displayCurrency)}</div>
+              <div style={{ fontSize: 18, fontWeight: 600, marginTop: 2 }}>{convert(myShare) == null ? "—" : fmt(convert(myShare), displayCurrency)}</div>
             </div>
           </div>
         )}
@@ -128,12 +129,12 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
             <div style={{ display: "flex", marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.28)" }}>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 11, opacity: 0.85 }}>已收款</div>
-                <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{convert(daigouCollected) == null ? "—" : fmt(convert(daigouCollected), displayCurrency)}</div>
+                <div style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>{convert(daigouCollected) == null ? "—" : fmt(convert(daigouCollected), displayCurrency)}</div>
               </div>
               <div style={{ width: 1, background: "rgba(255,255,255,0.28)", margin: "0 14px" }} />
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 11, opacity: 0.85 }}>未收款</div>
-                <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{convert(daigouPending) == null ? "—" : fmt(convert(daigouPending), displayCurrency)}</div>
+                <div style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>{convert(daigouPending) == null ? "—" : fmt(convert(daigouPending), displayCurrency)}</div>
               </div>
             </div>
           )}
@@ -142,7 +143,7 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
 
       {byCategory.length > 0 && (
         <Card>
-          <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8, color: C.text }}>花費分類</div>
+          <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 8, color: C.text }}>花費分類</div>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <div style={{ position: "relative", width: 118, height: 118, flexShrink: 0 }}>
               <ResponsiveContainer width="100%" height="100%">
@@ -155,7 +156,7 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
               </ResponsiveContainer>
               <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
                 <div style={{ fontSize: 9, color: C.textSoft }}>合計</div>
-                <div style={{ fontSize: 12.5, fontWeight: 700, color: C.text }}>{fmt(totalBase, trip.base_currency)}</div>
+                <div style={{ fontSize: 12.5, fontWeight: 600, color: C.text }}>{fmt(totalBase, trip.base_currency)}</div>
               </div>
             </div>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 9 }}>
@@ -181,7 +182,7 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
       )}
 
       <Card>
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8, color: C.text }}>墊付金額</div>
+        <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 8, color: C.text }}>墊付金額</div>
         <div style={{ width: "100%", height: Math.max(120, byMember.length * 40) }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={byMember} layout="vertical" margin={{ left: 10 }}>
@@ -198,7 +199,7 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
       </Card>
 
       <Card>
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10, color: C.text }}>目前淨結餘</div>
+        <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 10, color: C.text }}>目前淨結餘</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {members.map((m, idx) => {
             const b = balances[m.id] || 0;
@@ -209,7 +210,7 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
                   <span style={{ fontSize: 14 }}>{m.name}</span>
                   {m.id === meId && <Tag label="我" color={C.primary} />}
                 </div>
-                <span style={{ fontSize: 14, fontWeight: 700, color: b > 0.01 ? C.success : b < -0.01 ? C.warn : C.textSoft }}>
+                <span style={{ fontSize: 14, fontWeight: 600, color: b > 0.01 ? C.success : b < -0.01 ? C.warn : C.textSoft }}>
                   {b > 0.01 ? `+${fmt(b, trip.base_currency)}` : b < -0.01 ? fmt(b, trip.base_currency) : "已結清"}
                 </span>
               </div>

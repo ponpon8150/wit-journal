@@ -36,7 +36,8 @@ export default function SettlementView({ trip, members, balances, settlements, o
   };
   const showAmt = (amountBase) => (convert(amountBase) == null ? "—" : fmt(convert(amountBase), displayCurrency));
   const flagBtnStyle = (active) => ({
-    width: 28, height: 28, borderRadius: "50%", padding: 0, cursor: "pointer", fontSize: 14,
+    width: 32, height: 32, borderRadius: "50%", padding: 0, cursor: "pointer", fontSize: 15,
+    lineHeight: 1, fontWeight: 700, boxSizing: "border-box", flexShrink: 0,
     display: "flex", alignItems: "center", justifyContent: "center",
     border: active ? `1.5px solid ${C.primary}` : `1px solid ${C.line}`,
     background: active ? `${C.primary}18` : "#fff",
@@ -71,7 +72,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
       {frozen ? (
         <Card>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>總結算清單</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>總結算清單</div>
             <button onClick={onUnfreeze} style={{ background: "none", border: "none", cursor: "pointer", color: C.textSoft, fontSize: 11.5, whiteSpace: "nowrap" }}>解除總結算</button>
           </div>
           <div style={{ fontSize: 12, color: C.textSoft, marginBottom: 12 }}>
@@ -93,11 +94,11 @@ export default function SettlementView({ trip, members, balances, settlements, o
                     <div style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13.5, flexWrap: "wrap" }}>
                         <Avatar name={memberName(line.from)} idx={memberIdx(line.from)} size={24} />
-                        <span style={{ fontWeight: 700, textDecoration: settled ? "line-through" : "none" }}>{memberName(line.from)}</span>
+                        <span style={{ fontWeight: 600, textDecoration: settled ? "line-through" : "none" }}>{memberName(line.from)}</span>
                         {line.from === meId && <Tag label="我" color={C.primary} />}
                         <ArrowRight size={13} color={C.textSoft} />
                         <Avatar name={memberName(line.to)} idx={memberIdx(line.to)} size={24} />
-                        <span style={{ fontWeight: 700, textDecoration: settled ? "line-through" : "none" }}>{memberName(line.to)}</span>
+                        <span style={{ fontWeight: 600, textDecoration: settled ? "line-through" : "none" }}>{memberName(line.to)}</span>
                         {line.to === meId && <Tag label="我" color={C.primary} />}
                       </div>
                       {line.paid > 0 && !settled && (
@@ -109,7 +110,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
                         <Check size={18} color={C.success} />
                       ) : (
                         <>
-                          <span style={{ fontWeight: 700, color: C.warn }}>{showAmt(line.remaining)} {displayCurrency}</span>
+                          <span style={{ fontWeight: 600, color: C.warn }}>{showAmt(line.remaining)} {displayCurrency}</span>
                           <Btn variant="subtle" onClick={() => onOpenRecord({ from: line.from, to: line.to, amount: line.remaining })}>還款</Btn>
                         </>
                       )}
@@ -122,7 +123,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
         </Card>
       ) : (
         <Card>
-          <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, color: C.text }}>結算建議</div>
+          <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4, color: C.text }}>結算建議</div>
           <div style={{ fontSize: 12, color: C.textSoft, marginBottom: 12 }}>已自動扣除先前登記的還款，只顯示尚未結清的部分</div>
           {suggestions.length === 0 ? (
             <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.success, fontSize: 14, padding: "10px 0" }}>
@@ -134,15 +135,15 @@ export default function SettlementView({ trip, members, balances, settlements, o
                 <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.bg, borderRadius: 14, padding: "10px 12px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13.5, flexWrap: "wrap" }}>
                     <Avatar name={memberName(s.from)} idx={memberIdx(s.from)} size={24} />
-                    <span style={{ fontWeight: 700 }}>{memberName(s.from)}</span>
+                    <span style={{ fontWeight: 600 }}>{memberName(s.from)}</span>
                     {s.from === meId && <Tag label="我" color={C.primary} />}
                     <ArrowRight size={13} color={C.textSoft} />
                     <Avatar name={memberName(s.to)} idx={memberIdx(s.to)} size={24} />
-                    <span style={{ fontWeight: 700 }}>{memberName(s.to)}</span>
+                    <span style={{ fontWeight: 600 }}>{memberName(s.to)}</span>
                     {s.to === meId && <Tag label="我" color={C.primary} />}
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span style={{ fontWeight: 700, color: C.warn }}>{showAmt(s.amount)} {displayCurrency}</span>
+                    <span style={{ fontWeight: 600, color: C.warn }}>{showAmt(s.amount)} {displayCurrency}</span>
                     <Btn variant="subtle" onClick={() => onOpenRecord(s)}>還款</Btn>
                   </div>
                 </div>
@@ -157,7 +158,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
       )}
 
       <Card>
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10, color: C.text }}>還款紀錄</div>
+        <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 10, color: C.text }}>還款紀錄</div>
         {settlements.length === 0 ? (
           <div style={{ fontSize: 13, color: C.textSoft }}>尚無還款紀錄</div>
         ) : (
@@ -166,7 +167,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
               <div key={s.id} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
                 <span style={{ color: C.text }}><b>{memberName(s.from_member)}</b> 還給 <b>{memberName(s.to_member)}</b></span>
                 <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ color: C.success, fontWeight: 700 }}>{showAmt(s.amount)} {displayCurrency}</span>
+                  <span style={{ color: C.success, fontWeight: 600 }}>{showAmt(s.amount)} {displayCurrency}</span>
                   <span style={{ color: C.textSoft, fontSize: 11 }}>{new Date(s.occurred_at).toLocaleDateString("zh-TW")}</span>
                 </span>
               </div>

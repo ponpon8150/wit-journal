@@ -46,7 +46,8 @@ export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, on
     return amountBase / travelRate;
   };
   const flagBtnStyle = (active) => ({
-    width: 28, height: 28, borderRadius: "50%", padding: 0, cursor: "pointer", fontSize: 14,
+    width: 32, height: 32, borderRadius: "50%", padding: 0, cursor: "pointer", fontSize: 15,
+    lineHeight: 1, fontWeight: 700, boxSizing: "border-box", flexShrink: 0,
     display: "flex", alignItems: "center", justifyContent: "center",
     border: active ? "2px solid #fff" : "2px solid rgba(255,255,255,0.35)",
     background: active ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.1)",
@@ -82,12 +83,12 @@ export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, on
           <div style={{ display: "flex", marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.28)" }}>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 11, opacity: 0.85 }}>已收款</div>
-              <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{convert(collectedTotal) == null ? "—" : fmt(convert(collectedTotal), displayCurrency)}</div>
+              <div style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>{convert(collectedTotal) == null ? "—" : fmt(convert(collectedTotal), displayCurrency)}</div>
             </div>
             <div style={{ width: 1, background: "rgba(255,255,255,0.28)", margin: "0 14px" }} />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 11, opacity: 0.85 }}>未收款</div>
-              <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{convert(pendingTotal) == null ? "—" : fmt(convert(pendingTotal), displayCurrency)}</div>
+              <div style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>{convert(pendingTotal) == null ? "—" : fmt(convert(pendingTotal), displayCurrency)}</div>
             </div>
           </div>
         )}
@@ -106,14 +107,14 @@ export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, on
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <Avatar name={g.targetName} idx={g.targetName.charCodeAt(0)} />
-                    <span style={{ fontSize: 14, fontWeight: 700, color: C.text }}>{g.targetName}</span>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: C.text }}>{g.targetName}</span>
                     <button onClick={() => onAddForTarget(g.targetName)} style={{ background: "none", border: "none", cursor: "pointer", color: "#5F9179", display: "flex", alignItems: "center", padding: 2 }}>
                       <Plus size={15} />
                     </button>
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <div style={{ fontSize: 11.5, color: C.textSoft }}>{boughtCount}/{g.items.length} 已購買</div>
-                    {groupTotal > 0 && <div style={{ fontSize: 12, color: "#5F9179", fontWeight: 700 }}>{fmt(groupTotal, trip.base_currency)} {trip.base_currency}</div>}
+                    {groupTotal > 0 && <div style={{ fontSize: 12, color: "#5F9179", fontWeight: 600 }}>{fmt(groupTotal, trip.base_currency)} {trip.base_currency}</div>}
                   </div>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

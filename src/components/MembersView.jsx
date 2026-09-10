@@ -25,7 +25,7 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <Card>
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10, color: C.text }}>旅程設定</div>
+        <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 10, color: C.text }}>旅程設定</div>
         <Field label="旅程名稱">
           <input className="tl-input" value={name} onChange={(e) => setName(e.target.value)} />
         </Field>
@@ -51,7 +51,7 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
 
       <Card>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>旅伴（{members.length}）</div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>旅伴（{members.length}）</div>
           <button onClick={onAddMember} style={{ background: "none", border: "none", cursor: "pointer", color: C.primary, display: "flex", alignItems: "center", gap: 4, fontSize: 12.5 }}>
             <Plus size={14} /> 新增
           </button>
@@ -82,7 +82,7 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
 
       <Card>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>旅程代碼</div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>旅程代碼</div>
           <button onClick={copyLink} style={{ background: "none", border: "none", cursor: "pointer", color: C.primary, display: "flex", alignItems: "center", gap: 4, fontSize: 12.5 }}>
             <Copy size={13} /> {copied ? "已複製" : "複製連結"}
           </button>

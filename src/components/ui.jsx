@@ -58,7 +58,7 @@ export function Modal({ title, onClose, children, wide }) {
     <div style={{ position: "fixed", inset: 0, background: "rgba(46,59,62,0.35)", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 50 }}>
       <div style={{ background: C.bg, width: "100%", maxWidth: wide ? 560 : 440, maxHeight: "88vh", overflowY: "auto", borderRadius: "24px 24px 0 0", padding: 20, fontFamily: FONT_BODY }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-          <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 19, color: C.text, margin: 0 }}>{title}</h3>
+          <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 600, color: C.text, margin: 0 }}>{title}</h3>
           <button onClick={onClose} style={{ background: C.surfaceAlt, border: "none", borderRadius: "50%", width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
             <X size={16} color={C.text} />
           </button>
