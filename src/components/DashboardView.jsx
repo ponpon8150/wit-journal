@@ -102,12 +102,12 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
       {daigouItems.length > 0 && (
         <Card style={{ background: "linear-gradient(135deg, #8AB89E, #A9D0BC)", color: "#fff" }}>
           <div style={{ fontSize: 13, opacity: 0.9, display: "flex", alignItems: "center", gap: 6 }}>
-            <Gift size={14} /> 我的代購金額
+            <Gift size={14} /> 代購總花費
           </div>
-          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30, marginTop: 4 }}>
+          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30, marginTop: 4, textAlign: "right", paddingRight: 26 }}>
             {fmt(daigouTotal, trip.base_currency)} <span style={{ fontSize: 14 }}>{trip.base_currency}</span>
           </div>
-          <div style={{ fontSize: 12.5, opacity: 0.85, marginTop: 4 }}>共 {daigouItems.length} 項清單 · {daigouBoughtCount} 項已購買</div>
+          <div style={{ fontSize: 12.5, opacity: 0.85, marginTop: 4, textAlign: "right", paddingRight: 26 }}>共 {daigouItems.length} 項清單 · {daigouBoughtCount} 項已購買</div>
           {daigouTotal > 0 && (
             <div style={{ display: "flex", marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.28)" }}>
               <div style={{ flex: 1 }}>

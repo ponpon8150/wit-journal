@@ -24,10 +24,10 @@ export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, on
     <div>
       <Card style={{ background: `linear-gradient(135deg, #8AB89E, #A9D0BC)`, color: "#fff", marginBottom: 14 }}>
         <div style={{ fontSize: 13, opacity: 0.9, display: "flex", alignItems: "center", gap: 6 }}>
-          <Gift size={14} /> 我的代購總花費
+          <Gift size={14} /> 代購總花費
         </div>
-        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30, marginTop: 4 }}>{fmt(myTotal, trip.base_currency)} <span style={{ fontSize: 14 }}>{trip.base_currency}</span></div>
-        <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>共 {daigouItems.length} 項清單 · {boughtTotalCount} 項已購買</div>
+        <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30, marginTop: 4, textAlign: "right", paddingRight: 26 }}>{fmt(myTotal, trip.base_currency)} <span style={{ fontSize: 14 }}>{trip.base_currency}</span></div>
+        <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4, textAlign: "right", paddingRight: 26 }}>共 {daigouItems.length} 項清單 · {boughtTotalCount} 項已購買</div>
         {myTotal > 0 && (
           <div style={{ display: "flex", marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.28)" }}>
             <div style={{ flex: 1 }}>
