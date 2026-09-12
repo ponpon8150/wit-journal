@@ -185,6 +185,9 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
         </div>
       </Card>
 
+      {(daigouItems.length > 0 || byDaigouCategory.length > 0) && (
+      <div style={{ marginTop: 10, paddingTop: 24, borderTop: `1px solid ${C.line}`, display: "flex", flexDirection: "column", gap: 14 }}>
+
       {daigouItems.length > 0 && (
         <Card style={{ background: "linear-gradient(135deg, #8AB89E, #A9D0BC)", color: "#fff" }}>
           <div style={{ fontSize: 16, fontWeight: 700, opacity: 0.95, display: "flex", alignItems: "center", gap: 6 }}>
@@ -277,6 +280,9 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
             </div>
           )}
         </Card>
+      )}
+
+      </div>
       )}
     </div>
   );
