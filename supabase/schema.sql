@@ -65,9 +65,26 @@ create table if not exists settlements (
 -- 用 add column if not exists，重複執行這份 SQL 或是舊資料庫升級都不會出錯。
 alter table trips add column if not exists travel_currency text;
 
+-- 「最後編輯者」：花費卡片上顯示「XX 新增/編輯此費用」用。
+-- updated_by / updated_at 只在被編輯過後才會有值；一直沒被編輯過就維持 null，
+-- 畫面上就會改顯示 created_by（建立者）。
+alter table expenses add column if not exists updated_by text;
+alter table expenses add column if not exists updated_at timestamptz;
+
+-- 花費的完整編輯歷史紀錄：每次新增或編輯都會加一筆，用來在卡片上點開「查看紀錄」。
+create table if not exists expense_edits (
+  id text primary key,
+  trip_code text not null references trips(code) on delete cascade,
+  expense_id text not null references expenses(id) on delete cascade,
+  member_id text not null,
+  action text not null default 'edited', -- 'created' 或 'edited'
+  occurred_at timestamptz not null default now()
+);
+
 create index if not exists idx_members_trip on members(trip_code);
 create index if not exists idx_expenses_trip on expenses(trip_code);
 create index if not exists idx_settlements_trip on settlements(trip_code);
+create index if not exists idx_expense_edits_expense on expense_edits(expense_id);
 
 -- ------------------------------------------------------------------
 -- 權限模型說明
@@ -81,6 +98,7 @@ alter table trips enable row level security;
 alter table members enable row level security;
 alter table expenses enable row level security;
 alter table settlements enable row level security;
+alter table expense_edits enable row level security;
 
 drop policy if exists "anon full access" on trips;
 create policy "anon full access" on trips for all using (true) with check (true);
@@ -93,6 +111,9 @@ create policy "anon full access" on expenses for all using (true) with check (tr
 
 drop policy if exists "anon full access" on settlements;
 create policy "anon full access" on settlements for all using (true) with check (true);
+
+drop policy if exists "anon full access" on expense_edits;
+create policy "anon full access" on expense_edits for all using (true) with check (true);
 
 -- ------------------------------------------------------------------
 -- 即時同步：讓其他裝置能即時收到新增/修改/刪除

@@ -112,8 +112,10 @@ export async function updateLastCurrency(code, currency) {
   if (error) throw error;
 }
 
-export async function saveExpense(code, expense, rateUpdate) {
+export async function saveExpense(code, expense, rateUpdate, actor) {
   if (rateUpdate) await updateRate(code, rateUpdate.currency, rateUpdate.rate);
+  const isEdit = !!actor?.isEdit;
+  const actorId = actor?.meId;
   const row = {
     id: expense.id,
     trip_code: code,
@@ -131,9 +133,27 @@ export async function saveExpense(code, expense, rateUpdate) {
     day_id: expense.dayId,
     occurred_at: expense.occurredAt || new Date().toISOString(),
     created_by: expense.createdBy,
+    updated_by: isEdit ? actorId || null : null,
+    updated_at: isEdit ? new Date().toISOString() : null,
   };
   const { error } = await supabase.from("expenses").upsert(row);
   if (error) throw error;
+  if (actorId) {
+    const { error: logErr } = await supabase.from("expense_edits").insert({
+      id: uid(),
+      trip_code: code,
+      expense_id: expense.id,
+      member_id: actorId,
+      action: isEdit ? "edited" : "created",
+    });
+    if (logErr) throw logErr;
+  }
+}
+
+export async function fetchExpenseEdits(expenseId) {
+  const { data, error } = await supabase.from("expense_edits").select("*").eq("expense_id", expenseId).order("occurred_at", { ascending: true });
+  if (error) throw error;
+  return data || [];
 }
 
 export async function deleteExpense(id) {

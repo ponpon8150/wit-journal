@@ -6,6 +6,7 @@ import {
   fetchTrip, fetchMembers, fetchExpenses, fetchSettlements,
   createTrip, joinTrip, addMember, deleteMember, updateTripInfo, updateRate, updateLastCurrency,
   saveExpense, deleteExpense, addSettlement, finalizeSettlement, unfreezeSettlement, subscribeTrip,
+  fetchExpenseEdits,
 } from "./lib/db";
 import { Toast } from "./components/ui";
 import Landing from "./components/Landing";
@@ -262,12 +263,14 @@ export default function App() {
   const closeExpenseModal = () => { setExpenseModalOpen(false); setEditingExpense(null); };
 
   const handleSaveExpense = async (expense, rateUpdate, currencyUsed) => {
-    await saveExpense(currentCode, expense, rateUpdate);
+    await saveExpense(currentCode, expense, rateUpdate, { meId: currentMeId, isEdit: !!editingExpense });
     if (currencyUsed) await updateLastCurrency(currentCode, currencyUsed);
     closeExpenseModal();
     scheduleRefresh(currentCode);
     showToast("已儲存花費");
   };
+
+  const handleViewExpenseHistory = (expenseId) => fetchExpenseEdits(expenseId);
 
   const handleDeleteExpense = async (id) => {
     try {
@@ -439,7 +442,7 @@ export default function App() {
 
       <div style={{ flex: 1, padding: "16px 16px 100px", maxWidth: 640, width: "100%", margin: "0 auto", boxSizing: "border-box" }}>
         {activeTab === "expenses" && (
-          <ExpensesView trip={trip} members={members} expenses={expenses} onDelete={handleDeleteExpense} onEdit={openEditExpense} selectedDayId={selectedDayId} onSelectDay={setSelectedDayId} days={days} />
+          <ExpensesView trip={trip} members={members} expenses={expenses} onDelete={handleDeleteExpense} onEdit={openEditExpense} selectedDayId={selectedDayId} onSelectDay={setSelectedDayId} days={days} onViewHistory={handleViewExpenseHistory} />
         )}
         {activeTab === "dashboard" && (
           <DashboardView trip={trip} members={members} expenses={expenses} balances={balances} meId={currentMeId} daigouItems={daigouItems} onUpdateRate={handleUpdateRate} />

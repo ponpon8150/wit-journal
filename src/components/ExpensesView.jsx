@@ -2,13 +2,33 @@ import React, { useState, useMemo } from "react";
 import { LayoutGrid, Pencil, Trash2 } from "lucide-react";
 import { C, fmt } from "../lib/helpers";
 import { CATEGORIES, catMeta } from "../lib/categories";
-import { Card, Avatar } from "./ui";
+import { Card, Avatar, Modal } from "./ui";
 
-export default function ExpensesView({ trip, members, expenses, onDelete, onEdit, selectedDayId, onSelectDay, days }) {
+export default function ExpensesView({ trip, members, expenses, onDelete, onEdit, selectedDayId, onSelectDay, days, onViewHistory }) {
   const [filterCat, setFilterCat] = useState("all");
   const [viewPhoto, setViewPhoto] = useState(null);
+  const [historyExpense, setHistoryExpense] = useState(null);
+  const [historyList, setHistoryList] = useState(null);
   const memberName = (id) => members.find((m) => m.id === id)?.name || "已離開的旅伴";
   const memberIdx = (id) => members.findIndex((m) => m.id === id);
+
+  const actorLabel = (e) => {
+    const isEdited = !!e.updated_by;
+    const actorId = isEdited ? e.updated_by : e.created_by;
+    if (!actorId) return null;
+    return `${memberName(actorId)} ${isEdited ? "編輯" : "新增"}此費用`;
+  };
+
+  const openHistory = async (e) => {
+    setHistoryExpense(e);
+    setHistoryList(null);
+    try {
+      const list = await onViewHistory(e.id);
+      setHistoryList(list);
+    } catch (err) {
+      setHistoryList([]);
+    }
+  };
 
   const dayTotal = (dayId) => expenses.filter((e) => (e.day_id || "pre") === dayId).reduce((s, e) => s + Number(e.amount_base), 0);
 
@@ -101,12 +121,22 @@ export default function ExpensesView({ trip, members, expenses, onDelete, onEdit
                         備註：{e.note.replace(/\n/g, "　")}
                       </div>
                     )}
-                    <div style={{ display: "flex", marginTop: 6 }}>
-                      {(e.participants || []).map((p) => (
-                        <div key={p.memberId} style={{ marginLeft: -6 }}>
-                          <Avatar name={memberName(p.memberId)} idx={memberIdx(p.memberId)} size={20} />
-                        </div>
-                      ))}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6 }}>
+                      <div style={{ display: "flex" }}>
+                        {(e.participants || []).map((p) => (
+                          <div key={p.memberId} style={{ marginLeft: -6 }}>
+                            <Avatar name={memberName(p.memberId)} idx={memberIdx(p.memberId)} size={20} />
+                          </div>
+                        ))}
+                      </div>
+                      {actorLabel(e) && (
+                        <button
+                          onClick={(evt) => { evt.stopPropagation(); openHistory(e); }}
+                          style={{ background: "none", border: "none", cursor: "pointer", color: C.textSoft, fontSize: 11, padding: 0, whiteSpace: "nowrap" }}
+                        >
+                          {actorLabel(e)}
+                        </button>
+                      )}
                     </div>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
@@ -128,6 +158,27 @@ export default function ExpensesView({ trip, members, expenses, onDelete, onEdit
         <div onClick={() => setViewPhoto(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60, padding: 20 }}>
           <img src={viewPhoto} alt="收據" style={{ maxWidth: "100%", maxHeight: "100%", borderRadius: 12 }} />
         </div>
+      )}
+
+      {historyExpense && (
+        <Modal title={`「${historyExpense.title}」編輯紀錄`} onClose={() => setHistoryExpense(null)}>
+          {historyList === null ? (
+            <div style={{ fontSize: 13, color: C.textSoft, textAlign: "center", padding: "20px 0" }}>載入中…</div>
+          ) : historyList.length === 0 ? (
+            <div style={{ fontSize: 13, color: C.textSoft, textAlign: "center", padding: "20px 0" }}>沒有紀錄</div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {historyList.map((h) => (
+                <div key={h.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13, color: C.text }}>
+                  <span>{memberName(h.member_id)} {h.action === "created" ? "新增此費用" : "編輯此費用"}</span>
+                  <span style={{ color: C.textSoft, fontSize: 12 }}>
+                    {new Date(h.occurred_at).toLocaleString("zh-TW", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </Modal>
       )}
     </div>
   );
