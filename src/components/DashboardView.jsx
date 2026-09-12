@@ -71,7 +71,7 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <Card style={{ background: `linear-gradient(155deg, ${C.primary} 45%, #52C2CC 100%)`, color: "#fff" }}>
-        <div style={{ fontSize: 13, opacity: 0.85, paddingLeft: 20 }}>旅程總花費</div>
+        <div style={{ fontSize: 16, fontWeight: 700, opacity: 0.95, paddingLeft: 20 }}>旅程總花費</div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: travelCurrency ? "space-between" : "flex-end", marginTop: 2, paddingLeft: 20, paddingRight: 26 }}>
           {travelCurrency && (
             <div style={{ display: "flex", gap: 6 }}>
@@ -187,7 +187,7 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
 
       {daigouItems.length > 0 && (
         <Card style={{ background: "linear-gradient(135deg, #8AB89E, #A9D0BC)", color: "#fff" }}>
-          <div style={{ fontSize: 13, opacity: 0.9, display: "flex", alignItems: "center", gap: 6 }}>
+          <div style={{ fontSize: 16, fontWeight: 700, opacity: 0.95, display: "flex", alignItems: "center", gap: 6 }}>
             <Gift size={14} /> 代購總花費
           </div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: travelCurrency ? "space-between" : "flex-end", marginTop: 4, paddingRight: 26 }}>
