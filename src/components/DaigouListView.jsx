@@ -95,7 +95,7 @@ export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, on
         )}
       </Card>
 
-      <div style={{ fontSize: 12, color: C.textSoft, marginBottom: 12 }}>私人清單，只存在你這台裝置；勾選「已購買」直接記錄花了多少</div>
+      <div style={{ fontSize: 12, color: C.textSoft, marginBottom: 12 }}>⚠️ 僅存在這台裝置，換手機/電腦看不到；點選各項代購品項左側的圓圈，可記錄花費金額並顯示為「已購買」</div>
       {groups.length === 0 ? (
         <div style={{ textAlign: "center", color: C.textSoft, fontSize: 14, padding: "40px 0" }}>還沒有代購清單，點右下角「＋」新增第一項吧</div>
       ) : (

@@ -61,7 +61,7 @@ export function AddDaigouItemModal({ editingItem, presetTargetName, previousTarg
         {previousTargets.length > 0 && (
           <datalist id="daigou-target-suggestions">{previousTargets.map((t) => <option key={t} value={t} />)}</datalist>
         )}
-        <div style={{ fontSize: 11, color: C.textSoft, marginTop: 6 }}>這份清單完全私人保存，只有你自己看得到，不會跟旅伴同步。</div>
+        <div style={{ fontSize: 11, color: C.textSoft, marginTop: 6 }}>⚠️ 僅存在這台裝置，不會跟旅伴同步</div>
       </Field>
       <div style={{ display: "flex", gap: 10 }}>
         <div style={{ flex: 3 }}>
