@@ -184,6 +184,7 @@ export default function App() {
 
   /* ---------------------------------- 載入旅程資料 + 即時同步 ---------------------------------- */
   const refreshTimer = useRef(null);
+  const daigouLoadedRef = useRef(false);
   const refreshAll = useCallback(async (code) => {
     try {
       const [tripData, membersData, expensesData, settlementsData] = await Promise.all([
@@ -208,6 +209,7 @@ export default function App() {
   useEffect(() => {
     if (!currentCode) return;
     let cancelled = false;
+    daigouLoadedRef.current = false; // 換旅程了，代購清單還沒讀取，先擋住下面的自動存檔
     setLoading(true);
     setLoadError("");
     (async () => {
@@ -226,6 +228,7 @@ export default function App() {
         setExpenses(expensesData);
         setSettlements(settlementsData);
         setDaigouItems(loadDaigou(currentCode));
+        daigouLoadedRef.current = true; // 讀取完成，之後代購清單有異動才可以寫回 localStorage
         setSelectedDayId(defaultDayFor(tripData));
         syncMyTripsMeta(tripData);
         setLoading(false);
@@ -245,8 +248,10 @@ export default function App() {
   }, [currentCode, scheduleRefresh]);
 
   // 代購清單只存在本機，異動時直接寫回 localStorage
+  // 注意：一定要等上面那段把清單讀出來之後（daigouLoadedRef 設為 true）才能存檔，
+  // 不然重新整理頁面時，這裡會搶先用「還沒讀取」的空陣列把 localStorage 裡原本的清單覆蓋掉。
   useEffect(() => {
-    if (!currentCode) return;
+    if (!currentCode || !daigouLoadedRef.current) return;
     saveDaigouLocal(currentCode, daigouItems);
   }, [daigouItems, currentCode]);
 
