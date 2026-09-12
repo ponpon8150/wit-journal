@@ -132,7 +132,7 @@ export function AddDaigouItemModal({ editingItem, presetTargetName, previousTarg
 
 export function DaigouPurchaseModal({ trip, item, onClose, onSave }) {
   const [amount, setAmount] = useState(item.purchase ? String(item.purchase.amount) : "");
-  const [currency, setCurrency] = useState(item.purchase?.currency || trip.base_currency);
+  const [currency, setCurrency] = useState(item.purchase?.currency || trip.travel_currency || trip.base_currency);
   const [rate, setRate] = useState(item.purchase?.rate ?? (trip.rates?.[currency] || 1));
   const [purchaseDate, setPurchaseDate] = useState(item.purchase?.date || new Date().toISOString());
   const [photo, setPhoto] = useState(item.purchase?.receiptPhoto || item.photo || null);

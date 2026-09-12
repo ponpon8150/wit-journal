@@ -3,6 +3,7 @@ import { Gift } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { C, FONT_DISPLAY, fmt, memberColor, flagFor, fetchLiveRate } from "../lib/helpers";
 import { CATEGORIES } from "../lib/categories";
+import { DAIGOU_CATEGORIES } from "../lib/daigouCategories";
 import { Card, Avatar, Tag } from "./ui";
 
 export default function DashboardView({ trip, members, expenses, balances, meId, daigouItems = [], onUpdateRate }) {
@@ -55,6 +56,12 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
     return CATEGORIES.map((c) => ({ name: c.label, value: m[c.id] || 0, color: c.color })).filter((d) => d.value > 0);
   }, [expenses]);
 
+  const byDaigouCategory = useMemo(() => {
+    const m = {};
+    daigouItems.forEach((it) => { m[it.category] = (m[it.category] || 0) + (it.purchase?.amountBase || 0); });
+    return DAIGOU_CATEGORIES.map((c) => ({ name: c.label, value: m[c.id] || 0, color: c.color })).filter((d) => d.value > 0);
+  }, [daigouItems]);
+
   const byMember = members.map((m, idx) => ({
     name: m.name,
     paid: expenses.filter((e) => e.payer_id === m.id).reduce((s, e) => s + Number(e.amount_base), 0),
@@ -99,47 +106,6 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
           </div>
         )}
       </Card>
-
-      {daigouItems.length > 0 && (
-        <Card style={{ background: "linear-gradient(135deg, #8AB89E, #A9D0BC)", color: "#fff" }}>
-          <div style={{ fontSize: 13, opacity: 0.9, display: "flex", alignItems: "center", gap: 6 }}>
-            <Gift size={14} /> 代購總花費
-          </div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: travelCurrency ? "space-between" : "flex-end", marginTop: 4, paddingRight: 26 }}>
-            {travelCurrency && (
-              <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={() => setDisplayCurrency(trip.base_currency)} title={`顯示為 ${trip.base_currency}`} style={flagBtnStyle(displayCurrency === trip.base_currency)}>
-                  {flagFor(trip.base_currency)}
-                </button>
-                <button onClick={() => setDisplayCurrency(travelCurrency)} title={`顯示為 ${travelCurrency}`} style={flagBtnStyle(displayCurrency === travelCurrency)}>
-                  {flagFor(travelCurrency)}
-                </button>
-              </div>
-            )}
-            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30 }}>
-              {convert(daigouTotal) == null ? (
-                <span style={{ fontSize: 13, opacity: 0.85 }}>查詢匯率中…</span>
-              ) : (
-                <>{fmt(convert(daigouTotal), displayCurrency)} <span style={{ fontSize: 14 }}>{displayCurrency}</span></>
-              )}
-            </div>
-          </div>
-          <div style={{ fontSize: 13, opacity: 0.85, marginTop: 4, textAlign: "right", paddingRight: 26 }}>共 {daigouItems.length} 項清單 · {daigouBoughtCount} 項已購買</div>
-          {daigouTotal > 0 && (
-            <div style={{ display: "flex", marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.28)" }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 11, opacity: 0.85 }}>已收款</div>
-                <div style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>{convert(daigouCollected) == null ? "—" : fmt(convert(daigouCollected), displayCurrency)}</div>
-              </div>
-              <div style={{ width: 1, background: "rgba(255,255,255,0.28)", margin: "0 14px" }} />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 11, opacity: 0.85 }}>未收款</div>
-                <div style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>{convert(daigouPending) == null ? "—" : fmt(convert(daigouPending), displayCurrency)}</div>
-              </div>
-            </div>
-          )}
-        </Card>
-      )}
 
       {byCategory.length > 0 && (
         <Card>
@@ -218,6 +184,100 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
           })}
         </div>
       </Card>
+
+      {daigouItems.length > 0 && (
+        <Card style={{ background: "linear-gradient(135deg, #8AB89E, #A9D0BC)", color: "#fff" }}>
+          <div style={{ fontSize: 13, opacity: 0.9, display: "flex", alignItems: "center", gap: 6 }}>
+            <Gift size={14} /> 代購總花費
+          </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: travelCurrency ? "space-between" : "flex-end", marginTop: 4, paddingRight: 26 }}>
+            {travelCurrency && (
+              <div style={{ display: "flex", gap: 6 }}>
+                <button onClick={() => setDisplayCurrency(trip.base_currency)} title={`顯示為 ${trip.base_currency}`} style={flagBtnStyle(displayCurrency === trip.base_currency)}>
+                  {flagFor(trip.base_currency)}
+                </button>
+                <button onClick={() => setDisplayCurrency(travelCurrency)} title={`顯示為 ${travelCurrency}`} style={flagBtnStyle(displayCurrency === travelCurrency)}>
+                  {flagFor(travelCurrency)}
+                </button>
+              </div>
+            )}
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 30 }}>
+              {convert(daigouTotal) == null ? (
+                <span style={{ fontSize: 13, opacity: 0.85 }}>查詢匯率中…</span>
+              ) : (
+                <>{fmt(convert(daigouTotal), displayCurrency)} <span style={{ fontSize: 14 }}>{displayCurrency}</span></>
+              )}
+            </div>
+          </div>
+          <div style={{ fontSize: 12.5, opacity: 0.85, marginTop: 4, textAlign: "right", paddingRight: 26 }}>共 {daigouItems.length} 項清單 · {daigouBoughtCount} 項已購買</div>
+          {daigouTotal > 0 && (
+            <div style={{ display: "flex", marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.28)" }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 11, opacity: 0.85 }}>已收款</div>
+                <div style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>{convert(daigouCollected) == null ? "—" : fmt(convert(daigouCollected), displayCurrency)}</div>
+              </div>
+              <div style={{ width: 1, background: "rgba(255,255,255,0.28)", margin: "0 14px" }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 11, opacity: 0.85 }}>未收款</div>
+                <div style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>{convert(daigouPending) == null ? "—" : fmt(convert(daigouPending), displayCurrency)}</div>
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
+
+      {byDaigouCategory.length > 0 && (
+        <Card>
+          <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 8, color: C.text }}>代購分類</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div style={{ position: "relative", width: 118, height: 118, flexShrink: 0 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={byDaigouCategory} dataKey="value" nameKey="name" innerRadius={38} outerRadius={57} paddingAngle={2}>
+                    {byDaigouCategory.map((d, i) => <Cell key={i} fill={d.color} />)}
+                  </Pie>
+                  <Tooltip formatter={(v) => `${fmt(v, trip.base_currency)} ${trip.base_currency}`} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
+                <div style={{ fontSize: 10, color: C.textSoft }}>合計</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{fmt(daigouTotal, trip.base_currency)}</div>
+              </div>
+            </div>
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 9 }}>
+              {byDaigouCategory.map((d) => {
+                const pct = daigouTotal > 0 ? (d.value / daigouTotal) * 100 : 0;
+                return (
+                  <div key={d.name} style={{ display: "grid", gridTemplateColumns: "60px 1fr auto", alignItems: "center", gap: 8, fontSize: 12 }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 5, color: C.textSoft, overflow: "hidden", whiteSpace: "nowrap" }}>
+                      <span style={{ width: 7, height: 7, borderRadius: "50%", background: d.color, display: "inline-block", flexShrink: 0 }} />{d.name}
+                    </span>
+                    <div style={{ height: 6, background: C.bg, borderRadius: 4, overflow: "hidden" }}>
+                      <div style={{ width: `${pct}%`, height: "100%", background: d.color, borderRadius: 4 }} />
+                    </div>
+                    <span style={{ color: C.text, fontWeight: 600, textAlign: "right", whiteSpace: "nowrap" }}>
+                      {fmt(d.value, trip.base_currency)} <span style={{ color: C.textSoft, fontWeight: 500 }}>({Math.round(pct)}%)</span>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {daigouTotal > 0 && (
+            <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${C.line}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: C.textSoft, marginBottom: 6 }}>
+                <span>已收款 {Math.round((daigouCollected / daigouTotal) * 100)}%</span>
+                <span>未收款 {Math.round((daigouPending / daigouTotal) * 100)}%</span>
+              </div>
+              <div style={{ display: "flex", height: 10, borderRadius: 6, overflow: "hidden", background: C.bg }}>
+                {daigouCollected > 0 && <div style={{ width: `${(daigouCollected / daigouTotal) * 100}%`, background: C.success }} />}
+                {daigouPending > 0 && <div style={{ width: `${(daigouPending / daigouTotal) * 100}%`, background: C.warn }} />}
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
     </div>
   );
 }
