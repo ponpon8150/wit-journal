@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Camera, X } from "lucide-react";
 import { C, CURRENCIES, decimalsFor, roundToCurrency, fmt, uid, compressImageToDataUrl, recognizeReceiptText } from "../lib/helpers";
+import { DAIGOU_CATEGORIES, daigouCatMeta } from "../lib/daigouCategories";
 import { Modal, Field, Btn } from "./ui";
 
 export function AddDaigouItemModal({ editingItem, presetTargetName, previousTargets, onClose, onSave }) {
   const [targetName, setTargetName] = useState(editingItem?.targetName || presetTargetName || "");
   const [name, setName] = useState(editingItem?.name || "");
+  const [category, setCategory] = useState(editingItem?.category || "other");
   const [qty, setQty] = useState(editingItem?.qty || "");
   const [note, setNote] = useState(editingItem?.note || "");
   const [photo, setPhoto] = useState(editingItem?.photo || null);
@@ -45,7 +47,7 @@ export function AddDaigouItemModal({ editingItem, presetTargetName, previousTarg
     if (!targetName.trim()) return setErr("請輸入代購對象");
     if (!name.trim()) return setErr("請輸入品項名稱");
     onSave({
-      id: editingItem?.id || uid(), targetName: targetName.trim(), name: name.trim(), qty: qty.trim(),
+      id: editingItem?.id || uid(), targetName: targetName.trim(), name: name.trim(), category, qty: qty.trim(),
       note: note.trim(), photo, bought: editingItem?.bought || false, purchase: editingItem?.purchase || null,
       createdAt: editingItem?.createdAt || new Date().toISOString(),
     });
@@ -69,6 +71,26 @@ export function AddDaigouItemModal({ editingItem, presetTargetName, previousTarg
           <Field label="數量／規格"><input className="tl-input" placeholder="例如：2盒" value={qty} onChange={(e) => setQty(e.target.value)} /></Field>
         </div>
       </div>
+      <Field label="分類">
+        <div style={{ display: "grid", gridTemplateColumns: `repeat(${DAIGOU_CATEGORIES.length}, 1fr)`, gap: 6 }}>
+          {DAIGOU_CATEGORIES.map((c) => {
+            const Icon = c.icon;
+            const active = category === c.id;
+            return (
+              <button key={c.id} onClick={() => setCategory(c.id)} title={c.label} aria-label={c.label}
+                style={{
+                  display: "flex", alignItems: "center", justifyContent: "center", padding: "10px 0", borderRadius: 12,
+                  border: active ? `1.5px solid ${c.color}` : `1px solid ${C.line}`,
+                  background: active ? `${c.color}18` : "#fff", cursor: "pointer",
+                  color: active ? c.color : C.textSoft,
+                }}>
+                <Icon size={18} strokeWidth={active ? 2.4 : 1.8} />
+              </button>
+            );
+          })}
+        </div>
+        <div style={{ fontSize: 12, color: daigouCatMeta(category).color, marginTop: 6, fontWeight: 600 }}>已選擇：{daigouCatMeta(category).label}</div>
+      </Field>
       <Field label="拍照記錄與備註（選填，拍照後會自動辨識文字帶入備註）">
         <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
           {photo ? (

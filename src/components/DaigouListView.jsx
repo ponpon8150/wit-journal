@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Gift, Plus, Check, Pencil, Trash2 } from "lucide-react";
 import { C, FONT_DISPLAY, fmt, flagFor, fetchLiveRate } from "../lib/helpers";
+import { daigouCatMeta } from "../lib/daigouCategories";
 import { Card, Avatar } from "./ui";
 
 export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, onOpenPurchase, onUnmarkBought, onToggleCollected, onAddForTarget, onUpdateRate }) {
@@ -120,6 +121,8 @@ export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, on
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   {g.items.map((it) => {
                     const displayPhoto = it.purchase?.receiptPhoto || it.photo;
+                    const itCatMeta = daigouCatMeta(it.category);
+                    const ItCatIcon = itCatMeta.icon;
                     return (
                       <div key={it.id} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                         <button onClick={() => (it.bought ? onUnmarkBought(it.id) : onOpenPurchase(it))} style={{
@@ -134,7 +137,8 @@ export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, on
                         )}
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div onClick={() => onEdit(it)} style={{ cursor: "pointer" }}>
-                            <div style={{ fontSize: 14, fontWeight: 600, color: C.text, textDecoration: it.bought ? "line-through" : "none" }}>
+                            <div style={{ fontSize: 14, fontWeight: 600, color: C.text, textDecoration: it.bought ? "line-through" : "none", display: "flex", alignItems: "center", gap: 5 }}>
+                              <ItCatIcon size={13} color={itCatMeta.color} style={{ flexShrink: 0 }} />
                               {it.name}{it.qty ? ` · ${it.qty}` : ""}
                             </div>
                             {it.note && <div style={{ fontSize: 12, color: C.textSoft, marginTop: 1 }}>{it.note}</div>}
