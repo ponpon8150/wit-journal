@@ -122,6 +122,17 @@ export default function AddExpenseModal({ trip, members, onClose, onSave, meId, 
       return { memberId: id, shareLocal, shareBase: roundToCurrency(shareLocal * r, trip.base_currency) };
     });
     const amountBase = roundToCurrency(total * r, trip.base_currency);
+    // 修正四捨五入尾差：例如 3 人均分 100 元，每人各自四捨五入後加總可能是 99 或 101，
+    // 跟總金額對不起來，導致結算建議少算或多算。這裡把差額歸到最後一位分攤者身上，
+    // 確保「所有人分攤金額加總」一定精準等於「這筆花費的總金額」，餘額才不會算錯。
+    if (participants.length) {
+      const sumShares = participants.reduce((s, p) => s + p.shareBase, 0);
+      const diff = roundToCurrency(amountBase - sumShares, trip.base_currency);
+      if (diff !== 0) {
+        const last = participants[participants.length - 1];
+        last.shareBase = roundToCurrency(last.shareBase + diff, trip.base_currency);
+      }
+    }
     const expense = {
       id: editingExpense?.id || uid(), title: title.trim(), category, currency, amount: roundToCurrency(total, currency), rate: r,
       amountBase, payerId, splitType, participants, photoUrl, note: note.trim(),
