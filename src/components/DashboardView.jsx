@@ -37,7 +37,7 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
     return amountBase / travelRate;
   };
   const flagBtnStyle = (active) => ({
-    width: 32, height: 32, borderRadius: "50%", padding: "0 0 2px", cursor: "pointer", fontSize: 15,
+    width: 32, height: 32, borderRadius: "50%", padding: "0 0 3px", cursor: "pointer", fontSize: 15,
     lineHeight: 1, fontWeight: 700, boxSizing: "border-box", flexShrink: 0,
     display: "flex", alignItems: "center", justifyContent: "center",
     border: active ? "2px solid #fff" : "2px solid rgba(255,255,255,0.35)",
