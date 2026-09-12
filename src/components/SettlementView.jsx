@@ -36,7 +36,7 @@ export default function SettlementView({ trip, members, balances, settlements, o
   };
   const showAmt = (amountBase) => (convert(amountBase) == null ? "—" : fmt(convert(amountBase), displayCurrency));
   const flagBtnStyle = (active) => ({
-    width: 32, height: 32, borderRadius: "50%", padding: "1px 0 0", cursor: "pointer", fontSize: 15,
+    width: 32, height: 32, borderRadius: "50%", padding: "0 0 2px", cursor: "pointer", fontSize: 15,
     lineHeight: 1, fontWeight: 700, boxSizing: "border-box", flexShrink: 0,
     display: "flex", alignItems: "center", justifyContent: "center",
     border: active ? `1.5px solid ${C.primary}` : `1px solid ${C.line}`,
