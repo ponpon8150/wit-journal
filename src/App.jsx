@@ -8,7 +8,7 @@ import {
   saveExpense, deleteExpense, addSettlement, finalizeSettlement, unfreezeSettlement, subscribeTrip,
   fetchExpenseEdits,
 } from "./lib/db";
-import { Toast } from "./components/ui";
+import { Toast, HorizonBanner } from "./components/ui";
 import Landing from "./components/Landing";
 import MembersView from "./components/MembersView";
 import ExpensesView from "./components/ExpensesView";
@@ -435,6 +435,7 @@ export default function App() {
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT_BODY, display: "flex", flexDirection: "column" }}>
+      <HorizonBanner compact />
       <div style={{ position: "sticky", top: 0, zIndex: 20, background: C.surface, borderBottom: `1px solid ${C.line}`, padding: "14px 18px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div style={{ minWidth: 0 }}>
