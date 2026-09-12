@@ -270,7 +270,7 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
                 <span>已收款 {Math.round((daigouCollected / daigouTotal) * 100)}%</span>
                 <span>未收款 {Math.round((daigouPending / daigouTotal) * 100)}%</span>
               </div>
-              <div style={{ display: "flex", height: 10, borderRadius: 6, overflow: "hidden", background: C.bg }}>
+              <div style={{ display: "flex", height: 6, borderRadius: 4, overflow: "hidden", background: C.bg }}>
                 {daigouCollected > 0 && <div style={{ width: `${(daigouCollected / daigouTotal) * 100}%`, background: C.success }} />}
                 {daigouPending > 0 && <div style={{ width: `${(daigouPending / daigouTotal) * 100}%`, background: C.warn }} />}
               </div>
