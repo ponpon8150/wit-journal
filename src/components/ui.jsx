@@ -56,14 +56,23 @@ export function Card({ children, style }) {
 export function Modal({ title, onClose, children, wide }) {
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(46,59,62,0.35)", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 50 }}>
-      <div style={{ background: C.bg, width: "100%", maxWidth: wide ? 560 : 440, maxHeight: "88vh", overflowY: "auto", borderRadius: "24px 24px 0 0", padding: 20, fontFamily: FONT_BODY }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+      <div style={{
+        background: C.bg, width: "100%", maxWidth: wide ? "min(94vw, 640px)" : "min(94vw, 480px)",
+        maxHeight: "88vh", overflowY: "auto", borderRadius: "24px 24px 0 0", fontFamily: FONT_BODY,
+      }}>
+        <div style={{
+          position: "sticky", top: 0, zIndex: 5, background: C.bg,
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          padding: "20px 20px 14px", borderRadius: "24px 24px 0 0",
+        }}>
           <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 600, color: C.text, margin: 0 }}>{title}</h3>
-          <button onClick={onClose} style={{ background: C.surfaceAlt, border: "none", borderRadius: "50%", width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+          <button onClick={onClose} style={{ background: C.surfaceAlt, border: "none", borderRadius: "50%", width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
             <X size={16} color={C.text} />
           </button>
         </div>
-        {children}
+        <div style={{ padding: "0 20px 20px" }}>
+          {children}
+        </div>
       </div>
     </div>
   );
