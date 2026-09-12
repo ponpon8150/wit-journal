@@ -51,6 +51,11 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("expenses");
   const [selectedDayId, setSelectedDayId] = useState("pre");
 
+  // 切換下方分頁時，畫面固定捲回該分頁最上方（頁首）
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeTab]);
+
   const [toast, setToast] = useState({ text: "", tone: "info" });
   const toastTimer = useRef(null);
   const showToast = useCallback((text, tone = "info") => {
