@@ -3,7 +3,7 @@ import { Check, ArrowRight } from "lucide-react";
 import { C, fmt, simplifyDebts, flagFor, fetchLiveRate } from "../lib/helpers";
 import { Card, Avatar, Tag, Btn, Modal } from "./ui";
 
-export default function SettlementView({ trip, members, balances, settlements, onOpenRecord, meId, onFinalize, onUnfreeze, onUpdateRate }) {
+export default function SettlementView({ trip, members, expenses, balances, settlements, onOpenRecord, meId, onFinalize, onUnfreeze, onUpdateRate }) {
   const suggestions = useMemo(() => simplifyDebts(balances), [balances]);
   const memberName = (id) => members.find((m) => m.id === id)?.name || "已離開的旅伴";
   const memberIdx = (id) => members.findIndex((m) => m.id === id);
@@ -55,6 +55,18 @@ export default function SettlementView({ trip, members, balances, settlements, o
   }, [frozen, settlements]);
   const allSettled = frozen && frozenLines.every((l) => l.remaining < 0.01);
 
+  // 凍結之後，如果又有花費被新增、編輯或刪除，這張凍結清單就不會反映最新的欠款狀況，
+  // 用 created_at / updated_at（真實存檔時間，不是使用者自己填的花費日期）判斷是否有異動發生在凍結之後。
+  const hasNewActivitySinceFreeze = useMemo(() => {
+    if (!frozen || !expenses) return false;
+    const frozenAtMs = new Date(frozen.frozenAt).getTime();
+    return expenses.some((e) => {
+      const createdMs = e.created_at ? new Date(e.created_at).getTime() : 0;
+      const updatedMs = e.updated_at ? new Date(e.updated_at).getTime() : 0;
+      return createdMs > frozenAtMs || updatedMs > frozenAtMs;
+    });
+  }, [frozen, expenses]);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       {travelCurrency && (
@@ -78,6 +90,11 @@ export default function SettlementView({ trip, members, balances, settlements, o
           <div style={{ fontSize: 12, color: C.textSoft, marginBottom: 12 }}>
             已於 {new Date(frozen.frozenAt).toLocaleString("zh-TW")} 凍結金額，之後的還款只會扣減這張清單，不會重新配對對象
           </div>
+          {hasNewActivitySinceFreeze && (
+            <div style={{ fontSize: 12, color: C.warn, background: `${C.warn}18`, borderRadius: 10, padding: "8px 10px", marginBottom: 12 }}>
+              ⚠️ 凍結之後有花費被新增或修改過，金額可能跟這張清單對不上了，建議「解除總結算」讓系統重新計算
+            </div>
+          )}
           {allSettled ? (
             <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.success, fontSize: 14, padding: "10px 0" }}>
               <Check size={18} /> 太好了，本次旅程已全部結清！

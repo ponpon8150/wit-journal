@@ -58,10 +58,10 @@ export default function App() {
 
   const [toast, setToast] = useState({ text: "", tone: "info" });
   const toastTimer = useRef(null);
-  const showToast = useCallback((text, tone = "info") => {
+  const showToast = useCallback((text, tone = "info", duration = 2200) => {
     setToast({ text, tone });
     if (toastTimer.current) clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast({ text: "", tone: "info" }), 2200);
+    toastTimer.current = setTimeout(() => setToast({ text: "", tone: "info" }), duration);
   }, []);
 
   /* ---------------------------------- Modal 狀態 ---------------------------------- */
@@ -277,7 +277,11 @@ export default function App() {
     if (currencyUsed) await updateLastCurrency(currentCode, currencyUsed);
     closeExpenseModal();
     scheduleRefresh(currentCode);
-    showToast("已儲存花費");
+    if (trip?.final_settlement) {
+      showToast("已儲存花費，但旅程目前處於「總結算」凍結狀態，這筆花費不會反映在結算清單，需要解除總結算才會重新計算", "warn", 4500);
+    } else {
+      showToast("已儲存花費");
+    }
   };
 
   const handleViewExpenseHistory = (expenseId) => fetchExpenseEdits(expenseId);
@@ -286,7 +290,11 @@ export default function App() {
     try {
       await deleteExpense(id);
       scheduleRefresh(currentCode);
-      showToast("已刪除這筆花費");
+      if (trip?.final_settlement) {
+        showToast("已刪除這筆花費，但旅程目前處於「總結算」凍結狀態，結算清單不會自動更新，需要解除總結算才會重新計算", "warn", 4500);
+      } else {
+        showToast("已刪除這筆花費");
+      }
     } catch (e) {
       showToast("刪除失敗，請稍後再試", "error");
     }
@@ -459,7 +467,7 @@ export default function App() {
           <DashboardView trip={trip} members={members} expenses={expenses} balances={balances} meId={currentMeId} daigouItems={daigouItems} onUpdateRate={handleUpdateRate} />
         )}
         {activeTab === "settlement" && (
-          <SettlementView trip={trip} members={members} balances={balances} settlements={settlements} onOpenRecord={openRecordSettlement} meId={currentMeId} onFinalize={handleFinalize} onUnfreeze={handleUnfreeze} onUpdateRate={handleUpdateRate} />
+          <SettlementView trip={trip} members={members} expenses={expenses} balances={balances} settlements={settlements} onOpenRecord={openRecordSettlement} meId={currentMeId} onFinalize={handleFinalize} onUnfreeze={handleUnfreeze} onUpdateRate={handleUpdateRate} />
         )}
         {activeTab === "daigou" && (
           <DaigouListView
