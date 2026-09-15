@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
-import { C, FONT_DISPLAY, fmt, memberColor, flagFor, fetchLiveRate } from "../lib/helpers";
+import { C, FONT_DISPLAY, fmt, memberColor, flagFor, fetchLiveRate, daigouCollectedBase } from "../lib/helpers";
 import { CATEGORIES } from "../lib/categories";
 import { DAIGOU_CATEGORIES } from "../lib/daigouCategories";
 import { Card, Avatar, Tag } from "./ui";
@@ -45,7 +45,7 @@ export default function DashboardView({ trip, members, expenses, balances, meId,
   });
 
   const daigouTotal = daigouItems.reduce((s, it) => s + (it.purchase?.amountBase || 0), 0);
-  const daigouCollected = daigouItems.reduce((s, it) => s + (it.purchase?.collected ? it.purchase.amountBase : 0), 0);
+  const daigouCollected = daigouItems.reduce((s, it) => s + daigouCollectedBase(it.purchase), 0);
   const daigouPending = daigouTotal - daigouCollected;
   const daigouBoughtCount = daigouItems.filter((it) => it.bought).length;
 

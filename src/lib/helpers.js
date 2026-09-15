@@ -51,6 +51,16 @@ export const fmt = (n, currency) => {
   return rounded.toLocaleString("zh-TW", { minimumFractionDigits: d, maximumFractionDigits: d });
 };
 
+/* ---------------------------------- 代購「已收金額」累加邏輯 ---------------------------------- */
+// purchase.collectedAmount：累計已收金額（以旅程本幣 base currency 計算，跟 amountBase 同單位）。
+// 為相容舊資料（只有 collected 布林值、沒有 collectedAmount 欄位），沒有 collectedAmount 時：
+// collected=true 視為已全額收款（等於 amountBase），否則視為 0。
+export function daigouCollectedBase(purchase) {
+  if (!purchase) return 0;
+  if (typeof purchase.collectedAmount === "number") return purchase.collectedAmount;
+  return purchase.collected ? Number(purchase.amountBase || 0) : 0;
+}
+
 /* ---------------------------------- 照片：壓縮 + 上傳到 Supabase Storage ---------------------------------- */
 export function compressImage(file, maxW = 1000, quality = 0.7) {
   return new Promise((resolve, reject) => {

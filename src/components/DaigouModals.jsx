@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Camera, X } from "lucide-react";
-import { C, CURRENCIES, decimalsFor, roundToCurrency, fmt, uid, compressImageToDataUrl, recognizeReceiptText } from "../lib/helpers";
+import { C, CURRENCIES, decimalsFor, roundToCurrency, fmt, uid, compressImageToDataUrl, recognizeReceiptText, daigouCollectedBase } from "../lib/helpers";
 import { DAIGOU_CATEGORIES, daigouCatMeta } from "../lib/daigouCategories";
 import { Modal, Field, Btn } from "./ui";
 
@@ -141,7 +141,8 @@ export function DaigouPurchaseModal({ trip, item, onClose, onSave }) {
   const [uploading, setUploading] = useState(false);
   const [ocrLoading, setOcrLoading] = useState(false);
   const [ocrError, setOcrError] = useState("");
-  const [collected, setCollected] = useState(item.purchase?.collected || false);
+  const existingCollectedBase = daigouCollectedBase(item.purchase);
+  const [addPayment, setAddPayment] = useState("");
   const [err, setErr] = useState("");
   const isFirstRender = useRef(true);
 
@@ -182,10 +183,16 @@ export function DaigouPurchaseModal({ trip, item, onClose, onSave }) {
     if (!total || total <= 0) return setErr("請輸入正確金額");
     const r = parseFloat(rate);
     if (!r || r <= 0) return setErr("請輸入正確匯率");
+    const amountBase = roundToCurrency(total * r, trip.base_currency);
+    // 「這次收到」金額：以目前選擇的幣別輸入，換算成本幣後累加到已收總額，並自動封頂於總花費
+    const addLocal = parseFloat(addPayment) || 0;
+    const addBase = addLocal > 0 ? roundToCurrency(addLocal * r, trip.base_currency) : 0;
+    const collectedAmount = Math.max(0, Math.min(amountBase, roundToCurrency(existingCollectedBase + addBase, trip.base_currency)));
+    const collected = amountBase > 0 && collectedAmount >= amountBase;
     onSave({
       amount: roundToCurrency(total, currency), currency, rate: r,
-      amountBase: roundToCurrency(total * r, trip.base_currency),
-      receiptPhoto: photo, receiptNote: note.trim(), collected, date: purchaseDate,
+      amountBase,
+      receiptPhoto: photo, receiptNote: note.trim(), collectedAmount, collected, date: purchaseDate,
     });
   };
 
@@ -243,16 +250,30 @@ export function DaigouPurchaseModal({ trip, item, onClose, onSave }) {
         </div>
       </Field>
       <Field label="收款狀態">
-        <div style={{ display: "flex", gap: 8 }}>
-          {[[false, "未收款"], [true, "已收款"]].map(([v, l]) => (
-            <button key={String(v)} onClick={() => setCollected(v)} style={{
-              flex: 1, padding: "9px 0", borderRadius: 10, cursor: "pointer", fontSize: 13, fontWeight: 600,
-              border: collected === v ? `1.5px solid ${v ? C.success : C.warn}` : `1px solid ${C.line}`,
-              background: collected === v ? `${v ? C.success : C.warn}14` : "#fff",
-              color: collected === v ? (v ? C.success : C.warn) : C.textSoft,
-            }}>{l}</button>
-          ))}
+        {(() => {
+          const previewAmountBase = (parseFloat(amount) || 0) > 0 && (parseFloat(rate) || 0) > 0
+            ? roundToCurrency(parseFloat(amount) * parseFloat(rate), trip.base_currency) : 0;
+          const remaining = Math.max(0, roundToCurrency(previewAmountBase - existingCollectedBase, trip.base_currency));
+          const fullyCollected = previewAmountBase > 0 && existingCollectedBase >= previewAmountBase;
+          return (
+            <div style={{ background: C.bg, borderRadius: 10, padding: "10px 12px", marginBottom: 8 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: C.textSoft }}>
+                <span>已收 {fmt(existingCollectedBase, trip.base_currency)} {trip.base_currency}</span>
+                <span style={{ color: fullyCollected ? C.success : C.warn, fontWeight: 600 }}>
+                  {fullyCollected ? "已收款 ✓" : `還差 ${fmt(remaining, trip.base_currency)} ${trip.base_currency}`}
+                </span>
+              </div>
+            </div>
+          );
+        })()}
+        <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
+          <div style={{ flex: 2 }}>
+            <Field label={`這次收到多少（${currency}）`}>
+              <input className="tl-input" type="number" step={decimalsFor(currency) === 0 ? "1" : "0.01"} placeholder="0" value={addPayment} onChange={(e) => setAddPayment(e.target.value)} />
+            </Field>
+          </div>
         </div>
+        <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 2 }}>朋友分次付款時，每次在這裡輸入這次收到的金額，系統會自動加總，收滿總額後自動標記「已收款 ✓」</div>
       </Field>
       {err && <div style={{ color: C.danger, fontSize: 13, marginBottom: 10 }}>{err}</div>}
       <Btn full onClick={handleSave}>儲存並標記已購買</Btn>

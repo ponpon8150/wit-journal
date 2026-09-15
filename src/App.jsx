@@ -387,8 +387,6 @@ export default function App() {
   };
   const handleDeleteDaigouItem = (id) => setDaigouItems((prev) => prev.filter((i) => i.id !== id));
   const handleUnmarkBought = (id) => setDaigouItems((prev) => prev.map((i) => (i.id === id ? { ...i, bought: false } : i)));
-  const handleToggleCollected = (id) =>
-    setDaigouItems((prev) => prev.map((i) => (i.id === id && i.purchase ? { ...i, purchase: { ...i.purchase, collected: !i.purchase.collected } } : i)));
   const handleSavePurchase = (purchaseData) => {
     setDaigouItems((prev) => prev.map((i) => (i.id === purchaseModalItem.id ? { ...i, bought: true, purchase: purchaseData } : i)));
     setPurchaseModalItem(null);
@@ -477,7 +475,6 @@ export default function App() {
             onDelete={handleDeleteDaigouItem}
             onOpenPurchase={(item) => setPurchaseModalItem(item)}
             onUnmarkBought={handleUnmarkBought}
-            onToggleCollected={handleToggleCollected}
             onAddForTarget={openAddDaigouItem}
             onUpdateRate={handleUpdateRate}
           />

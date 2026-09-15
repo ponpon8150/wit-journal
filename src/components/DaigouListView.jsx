@@ -1,10 +1,10 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Plus, Check, Pencil, Trash2 } from "lucide-react";
-import { C, FONT_DISPLAY, fmt, flagFor, fetchLiveRate } from "../lib/helpers";
+import { C, FONT_DISPLAY, fmt, flagFor, fetchLiveRate, daigouCollectedBase } from "../lib/helpers";
 import { daigouCatMeta } from "../lib/daigouCategories";
 import { Card, Avatar } from "./ui";
 
-export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, onOpenPurchase, onUnmarkBought, onToggleCollected, onAddForTarget, onUpdateRate }) {
+export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, onOpenPurchase, onUnmarkBought, onAddForTarget, onUpdateRate }) {
   const [zoomPhoto, setZoomPhoto] = useState(null);
 
   const groups = useMemo(() => {
@@ -17,7 +17,7 @@ export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, on
   }, [daigouItems]);
 
   const myTotal = daigouItems.reduce((s, it) => s + (it.purchase?.amountBase || 0), 0);
-  const collectedTotal = daigouItems.reduce((s, it) => s + (it.purchase?.collected ? it.purchase.amountBase : 0), 0);
+  const collectedTotal = daigouItems.reduce((s, it) => s + daigouCollectedBase(it.purchase), 0);
   const pendingTotal = myTotal - collectedTotal;
   const boughtTotalCount = daigouItems.filter((it) => it.bought).length;
 
@@ -151,13 +151,21 @@ export default function DaigouListView({ trip, daigouItems, onEdit, onDelete, on
                                 <button onClick={() => onOpenPurchase(it)} style={{ background: "none", border: "none", cursor: "pointer", color: C.textSoft, display: "flex", padding: 0 }} title="編輯金額／幣別／匯率">
                                   <Pencil size={12} />
                                 </button>
-                                <button onClick={() => onToggleCollected(it.id)} style={{
-                                  fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, cursor: "pointer", border: "none",
-                                  color: it.purchase.collected ? C.success : C.warn,
-                                  background: it.purchase.collected ? `${C.success}18` : `${C.warn}18`,
-                                }}>
-                                  {it.purchase.collected ? "已收款 ✓" : "未收款"}
-                                </button>
+                                {(() => {
+                                  const collectedBase = daigouCollectedBase(it.purchase);
+                                  const fullyCollected = it.purchase.amountBase > 0 && collectedBase >= it.purchase.amountBase;
+                                  const partial = collectedBase > 0 && !fullyCollected;
+                                  const label = fullyCollected ? "已收款 ✓" : partial ? `已收 ${fmt(collectedBase, trip.base_currency)}/${fmt(it.purchase.amountBase, trip.base_currency)}` : "未收款";
+                                  const tone = fullyCollected ? C.success : C.warn;
+                                  return (
+                                    <button onClick={() => onOpenPurchase(it)} title="點選記錄收款金額" style={{
+                                      fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, cursor: "pointer", border: "none",
+                                      color: tone, background: `${tone}18`,
+                                    }}>
+                                      {label}
+                                    </button>
+                                  );
+                                })()}
                               </div>
                               {it.purchase.receiptNote && (
                                 <div style={{ fontSize: 11, color: C.textSoft, marginTop: 4, whiteSpace: "pre-line", background: C.bg, borderRadius: 8, padding: "6px 8px" }}>
