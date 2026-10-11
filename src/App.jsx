@@ -100,18 +100,20 @@ export default function App() {
     if (!codeFromUrl) return;
     const upper = codeFromUrl.trim().toUpperCase();
     const existing = myTrips.find((t) => t.code === upper);
-    if (existing) enterTrip(existing.code, existing.meId);
+    // 用分享連結（網址帶 ?code=）打開、而且這台裝置已經加入過的旅程，
+    // 直接跳到「總覽」分頁，比較符合「點連結來看最新狀況」的情境。
+    if (existing) enterTrip(existing.code, existing.meId, "dashboard");
     else setPendingJoinCode(upper);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* ---------------------------------- 進入 / 離開旅程 ---------------------------------- */
-  function enterTrip(code, meId) {
+  function enterTrip(code, meId, initialTab = "expenses") {
     setErr("");
     setCurrentCode(code);
     setCurrentMeId(meId);
     setScreen("trip");
-    setActiveTab("expenses");
+    setActiveTab(initialTab);
   }
 
   function leaveTrip() {
