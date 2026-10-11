@@ -13,8 +13,8 @@ import React from "react";
    點「更換頭圖」，就可以選擇上傳自己拍的照片——這裡的插畫只是在使用者
    還沒自己選擇之前，依旅程名稱猜一張風格相符的插畫先頂著用。
 
-   以「國家」為單位呈現的熱門旅遊景點，共 8 個：
-   日本、韓國、泰國、港澳、法國、新加坡、越南、台灣。
+   以「國家」為單位呈現的熱門旅遊景點，共 7 個（台灣排最前面，泰國排倒數第二）：
+   台灣、日本、韓國、港澳、新馬、泰國、越南。
    ------------------------------------------------------------------ */
 
 function Scene({ id, sky, sun, water, children }) {
@@ -102,15 +102,6 @@ const PRESET_ART = {
       <rect x="636" y="116" width="20" height="66" fill="#5B6B72" />
     </Scene>
   ),
-  france: (
-    <Scene id="france" sky={["#DCCDE4", "#F4EAE1"]} sun="#F0D9E0" water={["#6B8FA0", "#3E6072"]}>
-      <polygon points="590,70 598,182 582,182" fill="#44423F" />
-      <polygon points="590,70 566,182 582,182" fill="#44423F" />
-      <polygon points="590,70 614,182 598,182" fill="#44423F" />
-      <line x1="572" y1="140" x2="608" y2="140" stroke="#44423F" strokeWidth="3" />
-      <line x1="578" y1="110" x2="602" y2="110" stroke="#44423F" strokeWidth="3" />
-    </Scene>
-  ),
   singapore: (
     <Scene id="singapore" sky={["#F4C9A8", "#F8E2CE"]} sun="#FFD9AE" water={["#2FA6AE", "#1E7580"]}>
       <rect x="520" y="130" width="18" height="52" fill="#4A5A62" />
@@ -146,8 +137,7 @@ const PRESET_KEYWORDS = [
   { id: "korea", keywords: ["首爾", "釜山", "韓國", "SEOUL", "BUSAN", "KOREA"] },
   { id: "thailand", keywords: ["曼谷", "清邁", "泰國", "BANGKOK", "THAILAND"] },
   { id: "hongkong", keywords: ["香港", "澳門", "HONGKONG", "HONG KONG", "MACAU", "MACAO"] },
-  { id: "france", keywords: ["巴黎", "法國", "PARIS", "FRANCE"] },
-  { id: "singapore", keywords: ["新加坡", "SINGAPORE"] },
+  { id: "singapore", keywords: ["新加坡", "馬來西亞", "吉隆坡", "沙巴", "檳城", "SINGAPORE", "MALAYSIA", "KUALA LUMPUR", "SABAH", "PENANG"] },
   { id: "vietnam", keywords: ["越南", "河內", "胡志明", "峴港", "VIETNAM", "HANOI", "DANANG"] },
   { id: "taiwan", keywords: ["台灣", "臺灣", "台北", "臺北", "台中", "高雄", "TAIWAN", "TAIPEI"] },
 ];
@@ -178,17 +168,16 @@ export function CoverPresetArt({ id }) {
   return PRESET_ART[resolvedId] || PRESET_ART.default;
 }
 
-/* 給「選擇頭圖」清單用：預設風景圖 + 8 個熱門旅遊景點，依序排列 */
+/* 給「選擇頭圖」清單用：預設風景圖 + 7 個熱門旅遊景點，依序排列（台灣排最前面） */
 export const COVER_PRESET_LIST = [
   { id: "default", label: "預設風景圖" },
+  { id: "taiwan", label: "台灣" },
   { id: "japan", label: "日本" },
   { id: "korea", label: "韓國" },
-  { id: "thailand", label: "泰國" },
   { id: "hongkong", label: "港澳" },
-  { id: "france", label: "法國" },
-  { id: "singapore", label: "新加坡" },
+  { id: "singapore", label: "新馬" },
+  { id: "thailand", label: "泰國" },
   { id: "vietnam", label: "越南" },
-  { id: "taiwan", label: "台灣" },
 ];
 
 /* 把資料庫裡的 trips.cover_url 解析成畫面要用的 { photoUrl, presetId }：
