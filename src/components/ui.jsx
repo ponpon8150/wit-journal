@@ -102,62 +102,60 @@ export function Toast({ text, tone }) {
   );
 }
 
-export function HorizonBanner({ compact, photoUrl, presetId, editable, uploading, onPick }) {
-  const h = compact ? 120 : 220;
+export function HorizonBanner({ compact, height, photoUrl, presetId }) {
+  const h = height || (compact ? 120 : 220);
+  return (
+    <div style={{ position: "relative", width: "100%", height: h, overflow: "hidden" }}>
+      {photoUrl ? (
+        <img src={photoUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+      ) : (
+        <CoverPresetArt id={presetId || "default"} />
+      )}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------
+   頭圖選擇清單：給「旅伴」分頁的「旅程設定」卡片用。
+   不把按鈕直接放在頭圖上面（避免遮到照片），改成在設定裡點「更換頭圖」
+   跳出這個清單：可以上傳自己的照片，或是從內建插畫裡挑一張。
+   ------------------------------------------------------------------ */
+export function CoverPickerModal({ onClose, onSelectPreset, onUploadFile, uploading, presetList }) {
   const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
     const file = e.target.files && e.target.files[0];
     e.target.value = ""; // 清空，確保下次選同一張照片也會觸發 onChange
-    if (file && onPick) onPick(file);
+    if (file && onUploadFile) onUploadFile(file);
   };
 
   return (
-    <div style={{ position: "relative", width: "100%", height: h, overflow: "hidden" }}>
-      {photoUrl ? (
-        <img src={photoUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-      ) : presetId ? (
-        <CoverPresetArt id={presetId} />
-      ) : (
-        <svg viewBox="0 0 800 300" preserveAspectRatio="none" width="100%" height="100%">
-          <defs>
-            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#BFD9E3" /><stop offset="100%" stopColor="#EDE7DA" />
-            </linearGradient>
-            <radialGradient id="sun" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#FFFDF6" /><stop offset="60%" stopColor="#FFF7E0" stopOpacity="0.9" /><stop offset="100%" stopColor="#FFF7E0" stopOpacity="0" />
-            </radialGradient>
-            <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#3FB8C4" /><stop offset="100%" stopColor="#2C7A8C" />
-            </linearGradient>
-          </defs>
-          <rect x="0" y="0" width="800" height="180" fill="url(#sky)" />
-          <circle cx="430" cy="120" r="70" fill="url(#sun)" />
-          <circle cx="430" cy="120" r="26" fill="#FFFDF6" />
-          <path d="M0 150 L120 90 L260 130 L400 100 L560 150 L800 130 L800 180 L0 180 Z" fill="#DCE7D8" opacity="0.9" />
-          <path d="M0 160 L110 130 L250 155 L420 138 L600 165 L800 150 L800 180 L0 180 Z" fill="#C7D6C2" opacity="0.7" />
-          <rect x="0" y="180" width="800" height="120" fill="url(#water)" />
-          <path d="M550 300 Q620 250 700 270 T800 260 L800 300 Z" fill="#C4A876" opacity="0.55" />
-        </svg>
-      )}
-      {editable && (
-        <>
-          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} style={{ display: "none" }} />
+    <Modal title="更換頭圖" onClose={onClose}>
+      <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} style={{ display: "none" }} />
+      <Btn full onClick={() => fileInputRef.current && fileInputRef.current.click()} disabled={uploading} style={{ marginBottom: 16 }}>
+        {uploading ? <Loader2 size={16} className="tl-spin" /> : <Camera size={16} />}
+        {uploading ? "上傳中…" : "上傳自己的照片"}
+      </Btn>
+      <div style={{ fontSize: 13, color: C.textSoft, marginBottom: 10 }}>或從內建插畫挑一張：</div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        {presetList.map((p) => (
           <button
+            key={p.id}
             type="button"
-            onClick={() => fileInputRef.current && fileInputRef.current.click()}
+            onClick={() => onSelectPreset(p.id)}
             disabled={uploading}
-            title="更換頭圖"
             style={{
-              position: "absolute", right: 10, bottom: 10, width: 34, height: 34, borderRadius: "50%",
-              border: "none", background: "rgba(46,59,62,0.55)", color: "#fff", display: "flex",
-              alignItems: "center", justifyContent: "center", cursor: uploading ? "not-allowed" : "pointer",
+              border: "none", padding: 0, borderRadius: 12, overflow: "hidden", cursor: uploading ? "not-allowed" : "pointer",
+              background: C.surfaceAlt, textAlign: "left",
             }}
           >
-            {uploading ? <Loader2 size={16} className="tl-spin" /> : <Camera size={16} />}
+            <div style={{ width: "100%", height: 54, overflow: "hidden" }}>
+              <CoverPresetArt id={p.id} />
+            </div>
+            <div style={{ fontSize: 12, color: C.text, padding: "6px 8px", fontWeight: 600 }}>{p.label}</div>
           </button>
-        </>
-      )}
-    </div>
+        ))}
+      </div>
+    </Modal>
   );
 }

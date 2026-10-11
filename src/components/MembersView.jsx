@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { Plus, Trash2, Copy } from "lucide-react";
 import { C, FONT_DISPLAY, CURRENCIES } from "../lib/helpers";
-import { Card, Avatar, Tag, Btn, Modal, Field } from "./ui";
+import { Card, Avatar, Tag, Btn, Modal, Field, HorizonBanner, CoverPickerModal } from "./ui";
+import { COVER_PRESET_LIST } from "../lib/coverPresets";
 import RateManagerCard from "./RateManagerCard";
 
-export default function MembersView({ trip, members, onAddMember, onLeave, onUpdateTripInfo, onUpdateRate, onDeleteMember, meId }) {
+export default function MembersView({ trip, members, onAddMember, onLeave, onUpdateTripInfo, onUpdateRate, onDeleteMember, meId, tripCover, onUploadCover, onSelectCoverPreset, uploadingCover }) {
   const [name, setName] = useState(trip.name);
   const [startDate, setStartDate] = useState(trip.start_date || "");
   const [dayCount, setDayCount] = useState(trip.day_count || 0);
   const [travelCurrency, setTravelCurrency] = useState(trip.travel_currency || "");
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [coverPickerOpen, setCoverPickerOpen] = useState(false);
   const dirty = name.trim() !== trip.name || startDate !== (trip.start_date || "") || String(dayCount) !== String(trip.day_count || 0) || travelCurrency !== (trip.travel_currency || "");
   const memberIdx = (id) => members.findIndex((m) => m.id === id);
 
@@ -26,6 +28,20 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <Card>
         <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 10, color: C.text }}>旅程設定</div>
+        {tripCover && (
+          <div style={{ marginBottom: 14 }}>
+            <div style={{ borderRadius: 12, overflow: "hidden", marginBottom: 8 }}>
+              <HorizonBanner height={70} photoUrl={tripCover.photoUrl} presetId={tripCover.presetId} />
+            </div>
+            <button
+              type="button"
+              onClick={() => setCoverPickerOpen(true)}
+              style={{ background: "none", border: "none", cursor: "pointer", color: C.primary, fontSize: 13, fontWeight: 600, padding: 0 }}
+            >
+              更換頭圖
+            </button>
+          </div>
+        )}
         <Field label="旅程名稱">
           <input className="tl-input" value={name} onChange={(e) => setName(e.target.value)} />
         </Field>
@@ -100,6 +116,16 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
           </div>
           <Btn full variant="danger" onClick={() => { onDeleteMember(confirmDelete.id); setConfirmDelete(null); }}>確認移除</Btn>
         </Modal>
+      )}
+
+      {coverPickerOpen && (
+        <CoverPickerModal
+          onClose={() => setCoverPickerOpen(false)}
+          onUploadFile={(file) => { onUploadCover(file); setCoverPickerOpen(false); }}
+          onSelectPreset={(id) => { onSelectCoverPreset(id); setCoverPickerOpen(false); }}
+          uploading={uploadingCover}
+          presetList={COVER_PRESET_LIST}
+        />
       )}
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Receipt, Wallet, HandCoins, Gift, Users, Plus, Loader2 } from "lucide-react";
 import { C, FONT_BODY, FONT_DISPLAY, computeBalances, buildDays, defaultDayFor, loadMyTrips, saveMyTrips, loadDaigou, saveDaigouLocal, uploadTripCover } from "./lib/helpers";
-import { matchCoverPreset } from "./lib/coverPresets";
+import { resolveTripCover } from "./lib/coverPresets";
 import { supabaseReady } from "./lib/supabase";
 import {
   fetchTrip, fetchMembers, fetchExpenses, fetchSettlements,
@@ -344,7 +344,7 @@ export default function App() {
 
   /* ---------------------------------- 旅程頭圖 ---------------------------------- */
   const [uploadingCover, setUploadingCover] = useState(false);
-  const handleChangeCover = async (file) => {
+  const handleUploadCover = async (file) => {
     if (!file || !currentCode) return;
     setUploadingCover(true);
     try {
@@ -352,10 +352,23 @@ export default function App() {
       await updateTripCover(currentCode, url);
       setTrip((prev) => (prev ? { ...prev, cover_url: url } : prev)); // 先手動更新一次，不用等即時同步
       scheduleRefresh(currentCode);
+      showToast("頭圖已更新");
     } catch (e) {
       showToast("頭圖上傳失敗，請稍後再試", "error");
     } finally {
       setUploadingCover(false);
+    }
+  };
+  const handleSelectCoverPreset = async (presetId) => {
+    if (!currentCode) return;
+    const value = `preset:${presetId}`;
+    try {
+      await updateTripCover(currentCode, value);
+      setTrip((prev) => (prev ? { ...prev, cover_url: value } : prev));
+      scheduleRefresh(currentCode);
+      showToast("頭圖已更新");
+    } catch (e) {
+      showToast("頭圖更新失敗，請稍後再試", "error");
     }
   };
 
@@ -461,17 +474,11 @@ export default function App() {
   }
 
   const showFab = activeTab === "expenses" || activeTab === "daigou";
+  const tripCover = resolveTripCover(trip);
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT_BODY, display: "flex", flexDirection: "column" }}>
-      <HorizonBanner
-        compact
-        photoUrl={trip.cover_url || null}
-        presetId={!trip.cover_url ? matchCoverPreset(trip.name) : null}
-        editable
-        uploading={uploadingCover}
-        onPick={handleChangeCover}
-      />
+      <HorizonBanner compact photoUrl={tripCover.photoUrl} presetId={tripCover.presetId} />
       <div style={{ position: "sticky", top: 0, zIndex: 20, background: C.surface, borderBottom: `1px solid ${C.line}`, padding: "14px 18px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div style={{ minWidth: 0, display: "flex", alignItems: "baseline", gap: 8, overflow: "hidden" }}>
@@ -505,7 +512,20 @@ export default function App() {
           />
         )}
         {activeTab === "members" && (
-          <MembersView trip={trip} members={members} onAddMember={() => setMemberModalOpen(true)} onLeave={leaveTrip} onUpdateTripInfo={handleUpdateTripInfo} onUpdateRate={handleUpdateRate} onDeleteMember={handleDeleteMember} meId={currentMeId} />
+          <MembersView
+            trip={trip}
+            members={members}
+            onAddMember={() => setMemberModalOpen(true)}
+            onLeave={leaveTrip}
+            onUpdateTripInfo={handleUpdateTripInfo}
+            onUpdateRate={handleUpdateRate}
+            onDeleteMember={handleDeleteMember}
+            meId={currentMeId}
+            tripCover={tripCover}
+            onUploadCover={handleUploadCover}
+            onSelectCoverPreset={handleSelectCoverPreset}
+            uploadingCover={uploadingCover}
+          />
         )}
       </div>
 
