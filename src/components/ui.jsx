@@ -136,7 +136,7 @@ export function CoverPickerModal({ onClose, onSelectPreset, onUploadFile, upload
         {uploading ? <Loader2 size={16} className="tl-spin" /> : <Camera size={16} />}
         {uploading ? "上傳中…" : "上傳自己的照片"}
       </Btn>
-      <div style={{ fontSize: 13, color: C.textSoft, marginBottom: 10 }}>或從內建插畫挑一張：</div>
+      <div style={{ fontSize: 13, color: C.textSoft, marginBottom: 10 }}>或從熱門旅遊景點插畫挑一張：</div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         {presetList.map((p) => (
           <button
