@@ -143,9 +143,15 @@ export default function SettlementView({ trip, members, expenses, balances, sett
           <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4, color: C.text }}>結算建議</div>
           <div style={{ fontSize: 12, color: C.textSoft, marginBottom: 12 }}>已自動扣除先前登記的還款，只顯示尚未結清的部分</div>
           {suggestions.length === 0 ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.success, fontSize: 14, padding: "10px 0" }}>
-              <Check size={18} /> 太好了，目前所有人都已結清！
-            </div>
+            expenses.length === 0 ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.textSoft, fontSize: 14, padding: "10px 0" }}>
+                還沒有花費紀錄
+              </div>
+            ) : (
+              <div style={{ display: "flex", alignItems: "center", gap: 8, color: C.success, fontSize: 14, padding: "10px 0" }}>
+                <Check size={18} /> 太好了，目前所有人都已結清！
+              </div>
+            )
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {suggestions.map((s, i) => (
