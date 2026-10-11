@@ -546,7 +546,7 @@ export default function App() {
 
       <div style={{
         position: "fixed", left: 0, right: 0, bottom: 0, background: C.surface, borderTop: `1px solid ${C.line}`,
-        display: "flex", justifyContent: "space-around", padding: "8px 4px calc(8px + env(safe-area-inset-bottom))", zIndex: 25,
+        display: "flex", justifyContent: "space-around", padding: "6px 4px calc(6px + env(safe-area-inset-bottom))", zIndex: 25,
         overflow: "visible",
       }}>
         {TABS.map((t) => {
@@ -556,7 +556,7 @@ export default function App() {
             return (
               <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
                 flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex",
-                flexDirection: "column", alignItems: "center", gap: 3, padding: 0,
+                flexDirection: "column", alignItems: "center", gap: 2, padding: 0,
                 color: active ? C.primary : C.textSoft,
               }}>
                 <div style={{
@@ -568,14 +568,14 @@ export default function App() {
                 }}>
                   <Icon size={24} color={active ? C.primary : C.textSoft} strokeWidth={2.2} />
                 </div>
-                <span style={{ fontSize: 11, fontWeight: active ? 700 : 600, marginTop: 2 }}>{t.label}</span>
+                <span style={{ fontSize: 11, fontWeight: active ? 700 : 600 }}>{t.label}</span>
               </button>
             );
           }
           return (
             <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
               background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column",
-              alignItems: "center", gap: 3, padding: "4px 10px", color: active ? C.primary : C.textSoft, flex: 1,
+              alignItems: "center", gap: 3, padding: "13px 10px 0", color: active ? C.primary : C.textSoft, flex: 1,
             }}>
               <Icon size={20} strokeWidth={active ? 2.4 : 1.8} />
               <span style={{ fontSize: 11, fontWeight: active ? 700 : 500 }}>{t.label}</span>
