@@ -546,24 +546,29 @@ export default function App() {
 
       <div style={{
         position: "fixed", left: 0, right: 0, bottom: 0, background: C.surface, borderTop: `1px solid ${C.line}`,
-        display: "flex", justifyContent: "space-around", padding: "1px 4px calc(1px + env(safe-area-inset-bottom))", zIndex: 25,
+        display: "flex", justifyContent: "space-around", padding: "3px 4px calc(3px + env(safe-area-inset-bottom))", zIndex: 25,
         overflow: "visible",
       }}>
         {TABS.map((t) => {
           const Icon = t.icon;
           const active = activeTab === t.id;
           if (t.id === "dashboard") {
+            // 中間的圓形按鈕本身（寬高/圓角/底色/邊框/陰影/圖示大小）完全沒有變動，
+            // 只是把「用負 marginTop 讓它浮在排版之上」改成「position absolute」，
+            // 這樣它就不會去影響整排的高度計算，旁邊四個分頁才能真正置中。
             return (
               <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
                 flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex",
-                flexDirection: "column", alignItems: "center", gap: 2, padding: 0,
-                color: active ? C.primary : C.textSoft,
+                flexDirection: "column", alignItems: "center", gap: 3, padding: 0,
+                position: "relative", color: active ? C.primary : C.textSoft,
               }}>
+                <div style={{ width: 20, height: 20 }} />
                 <div style={{
+                  position: "absolute", top: -20, left: "50%", transform: "translateX(-50%)",
                   width: 54, height: 54, borderRadius: "50%",
                   background: active ? C.surfaceAlt : C.surface,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  marginTop: -20, border: `3px solid ${C.surface}`,
+                  border: `3px solid ${C.surface}`,
                   boxShadow: active ? "0 4px 14px rgba(91,143,168,0.3)" : "0 2px 8px rgba(0,0,0,0.1)",
                 }}>
                   <Icon size={24} color={active ? C.primary : C.textSoft} strokeWidth={2.2} />
@@ -575,7 +580,7 @@ export default function App() {
           return (
             <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
               background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column",
-              alignItems: "center", gap: 3, padding: "13px 10px 0", color: active ? C.primary : C.textSoft, flex: 1,
+              alignItems: "center", gap: 3, padding: 0, color: active ? C.primary : C.textSoft, flex: 1,
             }}>
               <Icon size={20} strokeWidth={active ? 2.4 : 1.8} />
               <span style={{ fontSize: 11, fontWeight: active ? 700 : 500 }}>{t.label}</span>
