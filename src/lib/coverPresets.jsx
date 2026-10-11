@@ -1,7 +1,7 @@
 import React from "react";
 
 /* ------------------------------------------------------------------
-   熱門城市頭圖預設
+   熱門旅遊國家頭圖預設
    --------------------------------------------------------------
    說明：這裡提供的是跟首頁預設 Banner 風格一致的「手繪插畫」，
    不是真實照片。原因是：
@@ -12,6 +12,9 @@ import React from "react";
    如果想要「真實照片」當頭圖，請到「旅伴」分頁的「旅程設定」卡片裡
    點「更換頭圖」，就可以選擇上傳自己拍的照片——這裡的插畫只是在使用者
    還沒自己選擇之前，依旅程名稱猜一張風格相符的插畫先頂著用。
+
+   以「國家」為單位，共 8 個熱門旅遊國家（不分城市）：
+   日本、韓國、泰國、香港澹門、法國、新加坡、越南、台灣。
    ------------------------------------------------------------------ */
 
 function Scene({ id, sky, sun, water, children }) {
@@ -64,8 +67,8 @@ const PRESET_ART = {
       <path d="M550 300 Q620 250 700 270 T800 260 L800 300 Z" fill="#C4A876" opacity="0.55" />
     </svg>
   ),
-  tokyo: (
-    <Scene id="tokyo" sky={["#F7CBDA", "#FDEDE3"]} sun="#FFC9D6" water={["#3FB8C4", "#2C7A8C"]}>
+  japan: (
+    <Scene id="japan" sky={["#F7CBDA", "#FDEDE3"]} sun="#FFC9D6" water={["#3FB8C4", "#2C7A8C"]}>
       <path d="M230 182 L320 68 L345 100 L410 182 Z" fill="#9FB3CE" opacity="0.85" />
       <path d="M300 92 L320 68 L340 94 L326 102 L320 86 L314 100 Z" fill="#fff" opacity="0.95" />
       <rect x="585" y="140" width="6" height="42" fill="#B5563F" />
@@ -74,37 +77,20 @@ const PRESET_ART = {
       <rect x="583" y="142" width="60" height="6" fill="#B5563F" />
     </Scene>
   ),
-  osaka: (
-    <Scene id="osaka" sky={["#F6CD95", "#F8E7C6"]} sun="#FFD9A0" water={["#3FA6A8", "#2C7577"]}>
-      <rect x="560" y="140" width="64" height="42" fill="#5B7C6B" />
-      <polygon points="552,140 592,112 632,140" fill="#3F5B4E" />
-      <rect x="578" y="118" width="28" height="24" fill="#5B7C6B" />
-      <polygon points="572,118 592,100 612,118" fill="#3F5B4E" />
-      <rect x="586" y="94" width="12" height="12" fill="#C4A876" />
-    </Scene>
-  ),
-  seoul: (
-    <Scene id="seoul" sky={["#D3E5EE", "#EFE7D9"]} sun="#EAD9B8" water={["#4F93AC", "#2F6A80"]}>
+  korea: (
+    <Scene id="korea" sky={["#D3E5EE", "#EFE7D9"]} sun="#EAD9B8" water={["#4F93AC", "#2F6A80"]}>
       <path d="M160 182 L260 120 L360 182 Z" fill="#AEBBC4" opacity="0.7" />
       <path d="M520 150 Q592 108 664 150 L664 182 L520 182 Z" fill="#2E3B3E" />
       <rect x="548" y="150" width="88" height="8" fill="#B5563F" />
       <rect x="560" y="158" width="64" height="24" fill="#8C5A42" />
     </Scene>
   ),
-  bangkok: (
-    <Scene id="bangkok" sky={["#F7DE9E", "#F4E9C9"]} sun="#FFE2A0" water={["#4FA3A0", "#2E6E6B"]}>
+  thailand: (
+    <Scene id="thailand" sky={["#F7DE9E", "#F4E9C9"]} sun="#FFE2A0" water={["#4FA3A0", "#2E6E6B"]}>
       <polygon points="586,60 598,110 574,110" fill="#D9A648" />
       <polygon points="586,60 592,96 580,96" fill="#F2C76B" />
       <rect x="558" y="110" width="56" height="18" fill="#C8553D" />
       <polygon points="548,110 586,88 624,110" fill="#D9A648" />
-    </Scene>
-  ),
-  okinawa: (
-    <Scene id="okinawa" sky={["#AEE4E0", "#FDF6E2"]} sun="#FFF2C2" water={["#2FB8C0", "#1F8690"]}>
-      <path d="M520 182 C520 150 560 150 560 130 C560 150 596 150 596 182 Z" fill="#5B8F5E" />
-      <path d="M556 130 Q540 108 512 112" stroke="#3F6B42" strokeWidth="6" fill="none" strokeLinecap="round" />
-      <path d="M560 128 Q576 104 606 110" stroke="#3F6B42" strokeWidth="6" fill="none" strokeLinecap="round" />
-      <path d="M558 130 Q558 104 558 86" stroke="#6B4A33" strokeWidth="8" fill="none" />
     </Scene>
   ),
   hongkong: (
@@ -116,16 +102,54 @@ const PRESET_ART = {
       <rect x="636" y="116" width="20" height="66" fill="#5B6B72" />
     </Scene>
   ),
+  france: (
+    <Scene id="france" sky={["#DCCDE4", "#F4EAE1"]} sun="#F0D9E0" water={["#6B8FA0", "#3E6072"]}>
+      <polygon points="590,70 598,182 582,182" fill="#44423F" />
+      <polygon points="590,70 566,182 582,182" fill="#44423F" />
+      <polygon points="590,70 614,182 598,182" fill="#44423F" />
+      <line x1="572" y1="140" x2="608" y2="140" stroke="#44423F" strokeWidth="3" />
+      <line x1="578" y1="110" x2="602" y2="110" stroke="#44423F" strokeWidth="3" />
+    </Scene>
+  ),
+  singapore: (
+    <Scene id="singapore" sky={["#F4C9A8", "#F8E2CE"]} sun="#FFD9AE" water={["#2FA6AE", "#1E7580"]}>
+      <rect x="520" y="130" width="18" height="52" fill="#4A5A62" />
+      <rect x="546" y="110" width="18" height="72" fill="#4A5A62" />
+      <rect x="572" y="130" width="18" height="52" fill="#4A5A62" />
+      <path d="M514 110 L596 110 L588 122 L522 122 Z" fill="#C4A876" />
+    </Scene>
+  ),
+  vietnam: (
+    <Scene id="vietnam" sky={["#BFE0D8", "#F2EBD4"]} sun="#FCEBB0" water={["#2E9C9E", "#1F6E70"]}>
+      <path d="M520 182 C520 150 548 148 552 168 C558 144 584 146 584 182 Z" fill="#4A6B5E" opacity="0.85" />
+      <path d="M598 182 C598 158 618 156 622 172 C626 154 648 156 648 182 Z" fill="#3F5B4E" opacity="0.8" />
+      <polygon points="470,168 486,150 502,168" fill="#E8DCC0" />
+      <line x1="486" y1="150" x2="486" y2="176" stroke="#8C7A5A" strokeWidth="2" />
+      <polygon points="460,182 512,182 500,176 472,176" fill="#6B4A33" />
+    </Scene>
+  ),
+  taiwan: (
+    <Scene id="taiwan" sky={["#BFE3DD", "#EAF2E8"]} sun="#CDEDE0" water={["#3FB8C4", "#2C7A8C"]}>
+      <path d="M470 182 L540 110 L585 182 Z" fill="#8FAE9B" opacity="0.8" />
+      <rect x="590" y="70" width="26" height="112" fill="#2E3B3E" />
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <rect key={i} x="586" y={76 + i * 17} width="34" height="3" fill="#C4A876" />
+      ))}
+      <polygon points="590,70 603,52 616,70" fill="#2E3B3E" />
+    </Scene>
+  ),
 };
 
 /* 旅程名稱關鍵字 → 預設插畫 id（不分大小寫、支援中英文子字串比對） */
 const PRESET_KEYWORDS = [
-  { id: "tokyo", keywords: ["東京", "日本", "富士", "TOKYO", "JAPAN", "FUJI"] },
-  { id: "osaka", keywords: ["大阪", "OSAKA"] },
-  { id: "seoul", keywords: ["首爾", "韓國", "SEOUL", "KOREA"] },
-  { id: "bangkok", keywords: ["曼谷", "泰國", "BANGKOK", "THAILAND"] },
-  { id: "okinawa", keywords: ["沖繩", "OKINAWA"] },
-  { id: "hongkong", keywords: ["香港", "HONGKONG", "HONG KONG"] },
+  { id: "japan", keywords: ["東京", "大阪", "沖繩", "日本", "京都", "北海道", "富士", "TOKYO", "OSAKA", "OKINAWA", "JAPAN", "KYOTO", "FUJI"] },
+  { id: "korea", keywords: ["首爾", "釜山", "韓國", "SEOUL", "BUSAN", "KOREA"] },
+  { id: "thailand", keywords: ["曼谷", "清邁", "泰國", "BANGKOK", "THAILAND"] },
+  { id: "hongkong", keywords: ["香港", "澹門", "HONGKONG", "HONG KONG", "MACAU", "MACAO"] },
+  { id: "france", keywords: ["巴黎", "法國", "PARIS", "FRANCE"] },
+  { id: "singapore", keywords: ["新加坡", "SINGAPORE"] },
+  { id: "vietnam", keywords: ["越南", "河內", "胡志明", "峴港", "VIETNAM", "HANOI", "DANANG"] },
+  { id: "taiwan", keywords: ["台灣", "臺灣", "台北", "臺北", "台中", "高雄", "TAIWAN", "TAIPEI"] },
 ];
 
 export function matchCoverPreset(tripName) {
@@ -137,19 +161,34 @@ export function matchCoverPreset(tripName) {
   return null;
 }
 
+// 舊版（以城市分類）的插畫 id 對照到新版（以國家分類）的 id，
+// 避免之前已經手動選過舊插畫的旅程，升級後顯示不出來、掉回預設圖。
+const LEGACY_ID_ALIASES = {
+  tokyo: "japan",
+  osaka: "japan",
+  okinawa: "japan",
+  seoul: "korea",
+  bangkok: "thailand",
+  paris: "france",
+  taipei: "taiwan",
+};
+
 export function CoverPresetArt({ id }) {
-  return PRESET_ART[id] || PRESET_ART.default;
+  const resolvedId = LEGACY_ID_ALIASES[id] || id;
+  return PRESET_ART[resolvedId] || PRESET_ART.default;
 }
 
-/* 給「選擇頭圖」清單用：預設風景圖 + 7 個城市插畫，依序排列 */
+/* 給「選擇頭圖」清單用：預設風景圖 + 8 個熱門旅遊國家，依序排列 */
 export const COVER_PRESET_LIST = [
   { id: "default", label: "預設風景圖" },
-  { id: "tokyo", label: "東京" },
-  { id: "osaka", label: "大阪" },
-  { id: "seoul", label: "首爾" },
-  { id: "bangkok", label: "曼谷" },
-  { id: "okinawa", label: "沖繩" },
-  { id: "hongkong", label: "香港" },
+  { id: "japan", label: "日本" },
+  { id: "korea", label: "韓國" },
+  { id: "thailand", label: "泰國" },
+  { id: "hongkong", label: "香港澹門" },
+  { id: "france", label: "法國" },
+  { id: "singapore", label: "新加坡" },
+  { id: "vietnam", label: "越南" },
+  { id: "taiwan", label: "台灣" },
 ];
 
 /* 把資料庫裡的 trips.cover_url 解析成畫面要用的 { photoUrl, presetId }：
