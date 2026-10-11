@@ -37,7 +37,7 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
               title="更換頭圖"
               style={{
                 position: "absolute", right: 8, bottom: 8, width: 28, height: 28, borderRadius: "50%",
-                border: "none", background: "rgba(46,59,62,0.3)", color: "#fff", display: "flex",
+                border: "none", background: "rgba(46,59,62,0.2)", color: "#fff", display: "flex",
                 alignItems: "center", justifyContent: "center", cursor: "pointer",
               }}
             >
