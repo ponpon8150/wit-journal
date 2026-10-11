@@ -120,6 +120,22 @@ export async function uploadReceiptPhoto(tripCode, file) {
   return data.publicUrl;
 }
 
+// 旅程頭圖：沿用跟收據照片一樣的 Storage 空間（receipts bucket），
+// 只是存到不同的子資料夾（cover/...），這樣不需要使用者額外在 Supabase
+// 新增一個 Storage bucket 跟權限設定。寬度壓縮大一點，因為頭圖是橫幅滿版顯示。
+export async function uploadTripCover(tripCode, file) {
+  if (!supabase) return null;
+  const blob = await compressImage(file, 1200, 0.75);
+  const path = `cover/${tripCode}/${uid()}.jpg`;
+  const { error } = await supabase.storage.from("receipts").upload(path, blob, {
+    contentType: "image/jpeg",
+    upsert: false,
+  });
+  if (error) throw error;
+  const { data } = supabase.storage.from("receipts").getPublicUrl(path);
+  return data.publicUrl;
+}
+
 /* ---------------------------------- 天數 / 日期 ---------------------------------- */
 export function buildDays(startDate, dayCount) {
   const days = [{ id: "pre", label: "行前", date: null }];

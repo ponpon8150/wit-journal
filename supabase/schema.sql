@@ -65,6 +65,11 @@ create table if not exists settlements (
 -- 用 add column if not exists，重複執行這份 SQL 或是舊資料庫升級都不會出錯。
 alter table trips add column if not exists travel_currency text;
 
+-- 「頭圖」：進入旅程後最上方那張橫幅圖片的網址。使用者透過頭圖右下角的
+-- 相機按鈕上傳照片後，會把照片存到 Storage（沿用 receipts bucket），
+-- 再把公開網址存進這個欄位；沒有設定時畫面會自動顯示預設插畫。
+alter table trips add column if not exists cover_url text;
+
 -- 「最後編輯者」：花費卡片上顯示「XX 新增/編輯此費用」用。
 -- updated_by / updated_at 只在被編輯過後才會有值；一直沒被編輯過就維持 null，
 -- 畫面上就會改顯示 created_by（建立者）。

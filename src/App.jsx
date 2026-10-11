@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Receipt, Wallet, HandCoins, Gift, Users, Plus, Loader2 } from "lucide-react";
-import { C, FONT_BODY, FONT_DISPLAY, computeBalances, buildDays, defaultDayFor, loadMyTrips, saveMyTrips, loadDaigou, saveDaigouLocal } from "./lib/helpers";
+import { C, FONT_BODY, FONT_DISPLAY, computeBalances, buildDays, defaultDayFor, loadMyTrips, saveMyTrips, loadDaigou, saveDaigouLocal, uploadTripCover } from "./lib/helpers";
+import { matchCoverPreset } from "./lib/coverPresets";
 import { supabaseReady } from "./lib/supabase";
 import {
   fetchTrip, fetchMembers, fetchExpenses, fetchSettlements,
-  createTrip, joinTrip, addMember, deleteMember, updateTripInfo, updateRate, updateLastCurrency,
+  createTrip, joinTrip, addMember, deleteMember, updateTripInfo, updateRate, updateLastCurrency, updateTripCover,
   saveExpense, deleteExpense, addSettlement, finalizeSettlement, unfreezeSettlement, subscribeTrip,
   fetchExpenseEdits,
 } from "./lib/db";
@@ -341,6 +342,23 @@ export default function App() {
     }
   };
 
+  /* ---------------------------------- 旅程頭圖 ---------------------------------- */
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const handleChangeCover = async (file) => {
+    if (!file || !currentCode) return;
+    setUploadingCover(true);
+    try {
+      const url = await uploadTripCover(currentCode, file);
+      await updateTripCover(currentCode, url);
+      setTrip((prev) => (prev ? { ...prev, cover_url: url } : prev)); // 先手動更新一次，不用等即時同步
+      scheduleRefresh(currentCode);
+    } catch (e) {
+      showToast("頭圖上傳失敗，請稍後再試", "error");
+    } finally {
+      setUploadingCover(false);
+    }
+  };
+
   /* ---------------------------------- 結算 ---------------------------------- */
   const openRecordSettlement = (suggestion) => { setSettlementSuggestion(suggestion); setSettlementModalOpen(true); };
   const closeRecordSettlement = () => { setSettlementModalOpen(false); setSettlementSuggestion(null); };
@@ -446,7 +464,14 @@ export default function App() {
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT_BODY, display: "flex", flexDirection: "column" }}>
-      <HorizonBanner compact />
+      <HorizonBanner
+        compact
+        photoUrl={trip.cover_url || null}
+        presetId={!trip.cover_url ? matchCoverPreset(trip.name) : null}
+        editable
+        uploading={uploadingCover}
+        onPick={handleChangeCover}
+      />
       <div style={{ position: "sticky", top: 0, zIndex: 20, background: C.surface, borderBottom: `1px solid ${C.line}`, padding: "14px 18px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div style={{ minWidth: 0, display: "flex", alignItems: "baseline", gap: 8, overflow: "hidden" }}>
