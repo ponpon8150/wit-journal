@@ -23,9 +23,27 @@ const files = [];
 walk(ROOT, files);
 if (fs.existsSync(API_ROOT)) walk(API_ROOT, files);
 
+// 專門抓一種 TS 檢查測不出來、但真正上線 build 會失敗的狀況：
+// .js 檔案裡面寫了 JSX 語法（例如 <svg>、<MyComponent />）。
+// 原因：Vite 實際 build 用的 esbuild，預設只有 .jsx / .tsx 檔案會啟用 JSX
+// 解析，純 .js 檔案遇到 JSX 語法會直接噴錯；但這裡用的 TypeScript
+// transpileModule 不分檔名、只要開了 jsx 選項就一律當作可以解析，
+// 所以光用 TS 檢查「看不出來」，上線後才會發現 build 失敗。
+// 這裡用簡單的標籤樣式比對（不是真的 parse），足以抓出這種情況。
+const JSX_TAG_PATTERN = /<\/?[A-Za-z][\w.]*(\s[^<>]*)?\/?>/;
+
 let hasError = false;
 for (const file of files) {
   const src = fs.readFileSync(file, "utf8");
+
+  if (/\.js$/.test(file) && JSX_TAG_PATTERN.test(src)) {
+    hasError = true;
+    console.log(`\n✗ ${path.relative(ROOT, file)}`);
+    console.log(`  這個檔案是 .js，但內容看起來含有 JSX 標籤（例如 <svg>、<div> 之類）。`);
+    console.log(`  Vite 實際 build 時 .js 檔案不會啟用 JSX 解析，上線會失敗。請把檔名改成 .jsx。`);
+    continue;
+  }
+
   const result = ts.transpileModule(src, {
     compilerOptions: {
       jsx: ts.JsxEmit.React,
