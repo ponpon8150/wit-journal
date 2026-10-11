@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Plus, Trash2, Copy } from "lucide-react";
+import { Plus, Trash2, Copy, Camera } from "lucide-react";
 import { C, FONT_DISPLAY, CURRENCIES } from "../lib/helpers";
 import { Card, Avatar, Tag, Btn, Modal, Field, HorizonBanner, CoverPickerModal } from "./ui";
 import { COVER_PRESET_LIST } from "../lib/coverPresets";
@@ -29,16 +29,19 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
       <Card>
         <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 10, color: C.text }}>旅程設定</div>
         {tripCover && (
-          <div style={{ marginBottom: 14 }}>
-            <div style={{ borderRadius: 12, overflow: "hidden", marginBottom: 8 }}>
-              <HorizonBanner height={70} photoUrl={tripCover.photoUrl} presetId={tripCover.presetId} />
-            </div>
+          <div style={{ marginBottom: 14, position: "relative", borderRadius: 12, overflow: "hidden" }}>
+            <HorizonBanner height={70} photoUrl={tripCover.photoUrl} presetId={tripCover.presetId} />
             <button
               type="button"
               onClick={() => setCoverPickerOpen(true)}
-              style={{ background: "none", border: "none", cursor: "pointer", color: C.primary, fontSize: 13, fontWeight: 600, padding: 0 }}
+              title="更換頭圖"
+              style={{
+                position: "absolute", right: 8, bottom: 8, width: 28, height: 28, borderRadius: "50%",
+                border: "none", background: "rgba(46,59,62,0.55)", color: "#fff", display: "flex",
+                alignItems: "center", justifyContent: "center", cursor: "pointer",
+              }}
             >
-              更換頭圖
+              <Camera size={14} />
             </button>
           </div>
         )}
