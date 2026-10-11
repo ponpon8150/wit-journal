@@ -279,7 +279,7 @@ export function DaigouPurchaseModal({ trip, item, onClose, onSave }) {
             </Field>
           </div>
         </div>
-        <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 2 }}>朋友分次付款時，每次在這裡輸入這次收到的金額，系統會自動加總，收滿總額後自動標記「已收款 ✓」</div>
+        <div style={{ fontSize: 11.5, color: C.textSoft, marginTop: 2 }}>可在此紀錄已收金額，系統會自動計算應收未收，完成收款後會顯示「已收款 ✓」</div>
       </Field>
       {err && <div style={{ color: C.danger, fontSize: 13, marginBottom: 10 }}>{err}</div>}
       <Btn full onClick={handleSave}>儲存並標記已購買</Btn>
