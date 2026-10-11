@@ -78,11 +78,13 @@ const PRESET_ART = {
     </Scene>
   ),
   korea: (
+    // 南山首爾塔：山丘 + 塔身 + 展望台 + 天線頂燈
     <Scene id="korea" sky={["#D3E5EE", "#EFE7D9"]} sun="#EAD9B8" water={["#4F93AC", "#2F6A80"]}>
-      <path d="M160 182 L260 120 L360 182 Z" fill="#AEBBC4" opacity="0.7" />
-      <rect x="552" y="148" width="68" height="34" fill="#6B4A36" />
-      <rect x="572" y="160" width="28" height="22" fill="#3F2E22" />
-      <path d="M532 148 Q540 126 586 122 Q632 126 640 148 Z" fill="#45545C" />
+      <polygon points="500,182 586,96 672,182" fill="#8FAE9B" opacity="0.85" />
+      <rect x="578" y="46" width="16" height="54" fill="#2E3B3E" />
+      <rect x="568" y="40" width="36" height="14" rx="7" fill="#3F4E54" />
+      <rect x="583" y="14" width="6" height="28" fill="#2E3B3E" />
+      <circle cx="586" cy="12" r="4" fill="#C8553D" />
     </Scene>
   ),
   thailand: (
