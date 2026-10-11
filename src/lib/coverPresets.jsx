@@ -99,15 +99,6 @@ const PRESET_ART = {
       <polygon points="548,110 586,88 624,110" fill="#D9A648" />
     </Scene>
   ),
-  taipei: (
-    <Scene id="taipei" sky={["#BFE3DD", "#EAF2E8"]} sun="#CDEDE0" water={["#3FB8C4", "#2C7A8C"]}>
-      <rect x="578" y="70" width="26" height="112" fill="#2E3B3E" />
-      {[0, 1, 2, 3, 4, 5].map((i) => (
-        <rect key={i} x="574" y={76 + i * 17} width="34" height="3" fill="#C4A876" />
-      ))}
-      <polygon points="578,70 591,52 604,70" fill="#2E3B3E" />
-    </Scene>
-  ),
   okinawa: (
     <Scene id="okinawa" sky={["#AEE4E0", "#FDF6E2"]} sun="#FFF2C2" water={["#2FB8C0", "#1F8690"]}>
       <path d="M520 182 C520 150 560 150 560 130 C560 150 596 150 596 182 Z" fill="#5B8F5E" />
@@ -125,15 +116,6 @@ const PRESET_ART = {
       <rect x="636" y="116" width="20" height="66" fill="#5B6B72" />
     </Scene>
   ),
-  paris: (
-    <Scene id="paris" sky={["#DCCDE4", "#F4EAE1"]} sun="#F0D9E0" water={["#6B8FA0", "#3E6072"]}>
-      <polygon points="590,70 598,182 582,182" fill="#44423F" />
-      <polygon points="590,70 566,182 582,182" fill="#44423F" />
-      <polygon points="590,70 614,182 598,182" fill="#44423F" />
-      <line x1="572" y1="140" x2="608" y2="140" stroke="#44423F" strokeWidth="3" />
-      <line x1="578" y1="110" x2="602" y2="110" stroke="#44423F" strokeWidth="3" />
-    </Scene>
-  ),
 };
 
 /* 旅程名稱關鍵字 → 預設插畫 id（不分大小寫、支援中英文子字串比對） */
@@ -142,10 +124,8 @@ const PRESET_KEYWORDS = [
   { id: "osaka", keywords: ["大阪", "OSAKA"] },
   { id: "seoul", keywords: ["首爾", "韓國", "SEOUL", "KOREA"] },
   { id: "bangkok", keywords: ["曼谷", "泰國", "BANGKOK", "THAILAND"] },
-  { id: "taipei", keywords: ["台北", "臺北", "TAIPEI"] },
   { id: "okinawa", keywords: ["沖繩", "OKINAWA"] },
   { id: "hongkong", keywords: ["香港", "HONGKONG", "HONG KONG"] },
-  { id: "paris", keywords: ["巴黎", "法國", "PARIS", "FRANCE"] },
 ];
 
 export function matchCoverPreset(tripName) {
@@ -161,17 +141,15 @@ export function CoverPresetArt({ id }) {
   return PRESET_ART[id] || PRESET_ART.default;
 }
 
-/* 給「選擇頭圖」清單用：預設風景圖 + 8 個城市插畫，依序排列 */
+/* 給「選擇頭圖」清單用：預設風景圖 + 7 個城市插畫，依序排列 */
 export const COVER_PRESET_LIST = [
   { id: "default", label: "預設風景圖" },
   { id: "tokyo", label: "東京" },
   { id: "osaka", label: "大阪" },
   { id: "seoul", label: "首爾" },
   { id: "bangkok", label: "曼谷" },
-  { id: "taipei", label: "台北" },
   { id: "okinawa", label: "沖繩" },
   { id: "hongkong", label: "香港" },
-  { id: "paris", label: "巴黎" },
 ];
 
 /* 把資料庫裡的 trips.cover_url 解析成畫面要用的 { photoUrl, presetId }：
