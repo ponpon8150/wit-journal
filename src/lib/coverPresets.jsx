@@ -14,7 +14,7 @@ import React from "react";
    還沒自己選擇之前，依旅程名稱猜一張風格相符的插畫先頂著用。
 
    以「國家」為單位呈現的熱門旅遊景點，共 8 個：
-   日本、韓國、泰國、香港澹門、法國、新加坡、越南、台灣。
+   日本、韓國、泰國、港澳、法國、新加坡、越南、台灣。
    ------------------------------------------------------------------ */
 
 function Scene({ id, sky, sun, water, children }) {
@@ -145,7 +145,7 @@ const PRESET_KEYWORDS = [
   { id: "japan", keywords: ["東京", "大阪", "沖繩", "日本", "京都", "北海道", "富士", "TOKYO", "OSAKA", "OKINAWA", "JAPAN", "KYOTO", "FUJI"] },
   { id: "korea", keywords: ["首爾", "釜山", "韓國", "SEOUL", "BUSAN", "KOREA"] },
   { id: "thailand", keywords: ["曼谷", "清邁", "泰國", "BANGKOK", "THAILAND"] },
-  { id: "hongkong", keywords: ["香港", "澹門", "HONGKONG", "HONG KONG", "MACAU", "MACAO"] },
+  { id: "hongkong", keywords: ["香港", "澳門", "HONGKONG", "HONG KONG", "MACAU", "MACAO"] },
   { id: "france", keywords: ["巴黎", "法國", "PARIS", "FRANCE"] },
   { id: "singapore", keywords: ["新加坡", "SINGAPORE"] },
   { id: "vietnam", keywords: ["越南", "河內", "胡志明", "峴港", "VIETNAM", "HANOI", "DANANG"] },
@@ -184,7 +184,7 @@ export const COVER_PRESET_LIST = [
   { id: "japan", label: "日本" },
   { id: "korea", label: "韓國" },
   { id: "thailand", label: "泰國" },
-  { id: "hongkong", label: "香港澹門" },
+  { id: "hongkong", label: "港澳" },
   { id: "france", label: "法國" },
   { id: "singapore", label: "新加坡" },
   { id: "vietnam", label: "越南" },
