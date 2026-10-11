@@ -156,18 +156,22 @@ export default function SettlementView({ trip, members, expenses, balances, sett
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {suggestions.map((s, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.bg, borderRadius: 14, padding: "10px 12px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, flexWrap: "wrap" }}>
-                    <Avatar name={memberName(s.from)} idx={memberIdx(s.from)} size={24} />
-                    <span style={{ fontWeight: 600 }}>{memberName(s.from)}</span>
-                    {s.from === meId && <Tag label="我" color={C.primary} />}
-                    <ArrowRight size={13} color={C.textSoft} />
-                    <Avatar name={memberName(s.to)} idx={memberIdx(s.to)} size={24} />
-                    <span style={{ fontWeight: 600 }}>{memberName(s.to)}</span>
-                    {s.to === meId && <Tag label="我" color={C.primary} />}
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, flexWrap: "wrap", rowGap: 4 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <Avatar name={memberName(s.from)} idx={memberIdx(s.from)} size={24} />
+                      <span style={{ fontWeight: 600 }}>{memberName(s.from)}</span>
+                      {s.from === meId && <Tag label="我" color={C.primary} />}
+                      <ArrowRight size={13} color={C.textSoft} />
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <Avatar name={memberName(s.to)} idx={memberIdx(s.to)} size={24} />
+                      <span style={{ fontWeight: 600 }}>{memberName(s.to)}</span>
+                      {s.to === meId && <Tag label="我" color={C.primary} />}
+                    </div>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <span style={{ fontWeight: 600, color: C.warn }}>{showAmt(s.amount)} {displayCurrency}</span>
-                    <Btn variant="subtle" onClick={() => onOpenRecord(s)}>還款</Btn>
+                    <Btn variant="subtle" onClick={() => onOpenRecord(s)} style={{ fontSize: 12, padding: "8px 10px", whiteSpace: "nowrap" }}>還款</Btn>
                   </div>
                 </div>
               ))}
