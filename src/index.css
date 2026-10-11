@@ -27,7 +27,10 @@ button { font-family: inherit; }
   padding: 0 12px;
   border-radius: 12px;
   border: 1px solid #E1D9C9;
-  font-size: 14.5px;
+  /* iOS Safari 規則：輸入框文字小於 16px 時，點擊輸入會自動放大整個畫面，
+     且在這種單頁應用（切換分頁/彈出視窗不會整頁重新載入）裡，放大之後常常不會自動還原，
+     造成「畫面跳轉或彈出視窗後要自己手動縮放」的問題。改成 16px 讓 iOS 不再觸發這個自動放大。 */
+  font-size: 16px;
   background: #fff;
   color: #2E3B3E;
   font-family: inherit;
@@ -58,7 +61,7 @@ input[type="date"].tl-input::-webkit-date-and-time-value {
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid #E1D9C9;
-  font-size: 12px;
+  font-size: 16px; /* 同上，避免 iOS 自動放大畫面 */
   background: #fff;
   color: #2E3B3E;
   font-family: inherit;
