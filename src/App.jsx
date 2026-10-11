@@ -564,7 +564,7 @@ export default function App() {
               }}>
                 <div style={{ width: 20, height: 20 }} />
                 <div style={{
-                  position: "absolute", top: -20, left: "50%", transform: "translateX(-50%)",
+                  position: "absolute", top: -34, left: "50%", transform: "translateX(-50%)",
                   width: 54, height: 54, borderRadius: "50%",
                   background: active ? C.surfaceAlt : C.surface,
                   display: "flex", alignItems: "center", justifyContent: "center",
