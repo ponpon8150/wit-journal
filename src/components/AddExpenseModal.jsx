@@ -333,7 +333,10 @@ export default function AddExpenseModal({ trip, members, onClose, onSave, meId, 
             }}>
               <Camera size={22} className={uploading ? "tl-spin" : ""} />
               <span style={{ fontSize: 11, marginTop: 4 }}>{uploading ? "上傳中…" : "拍照 / 上傳"}</span>
-              <input type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={handlePhoto} />
+              {/* 拿掉 capture="environment"：這個屬性在不少 Android 瀏覽器上會強制直接開相機，
+                  跳過「從相簿／檔案選擇」的選項，造成使用者只能拍新照片、無法上傳已有的照片。
+                  移除後交給瀏覽器原生的選單，使用者可以自己選「拍照」或「相簿/檔案」。 */}
+              <input type="file" accept="image/*" style={{ display: "none" }} onChange={handlePhoto} />
             </label>
           )}
           <div style={{ flex: 1 }}>
