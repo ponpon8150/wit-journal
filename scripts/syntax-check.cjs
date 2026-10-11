@@ -8,6 +8,7 @@ const fs = require("fs");
 const path = require("path");
 
 const ROOT = path.join(__dirname, "..", "src");
+const API_ROOT = path.join(__dirname, "..", "api");
 
 function walk(dir, out) {
   for (const name of fs.readdirSync(dir)) {
@@ -20,6 +21,7 @@ function walk(dir, out) {
 
 const files = [];
 walk(ROOT, files);
+if (fs.existsSync(API_ROOT)) walk(API_ROOT, files);
 
 let hasError = false;
 for (const file of files) {
