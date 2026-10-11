@@ -80,17 +80,17 @@ const PRESET_ART = {
   korea: (
     <Scene id="korea" sky={["#D3E5EE", "#EFE7D9"]} sun="#EAD9B8" water={["#4F93AC", "#2F6A80"]}>
       <path d="M160 182 L260 120 L360 182 Z" fill="#AEBBC4" opacity="0.7" />
-      <path d="M520 150 Q592 108 664 150 L664 182 L520 182 Z" fill="#2E3B3E" />
-      <rect x="548" y="150" width="88" height="8" fill="#B5563F" />
-      <rect x="560" y="158" width="64" height="24" fill="#8C5A42" />
+      <rect x="552" y="148" width="68" height="34" fill="#6B4A36" />
+      <rect x="572" y="160" width="28" height="22" fill="#3F2E22" />
+      <path d="M532 148 Q540 126 586 122 Q632 126 640 148 Z" fill="#45545C" />
     </Scene>
   ),
   thailand: (
     <Scene id="thailand" sky={["#F7DE9E", "#F4E9C9"]} sun="#FFE2A0" water={["#4FA3A0", "#2E6E6B"]}>
-      <polygon points="586,60 598,110 574,110" fill="#D9A648" />
-      <polygon points="586,60 592,96 580,96" fill="#F2C76B" />
-      <rect x="558" y="110" width="56" height="18" fill="#C8553D" />
-      <polygon points="548,110 586,88 624,110" fill="#D9A648" />
+      <rect x="552" y="150" width="68" height="32" fill="#C8553D" />
+      <polygon points="540,150 586,120 632,150" fill="#D9A648" />
+      <polygon points="586,60 598,120 574,120" fill="#D9A648" />
+      <polygon points="586,60 592,100 580,100" fill="#F2C76B" />
     </Scene>
   ),
   hongkong: (
