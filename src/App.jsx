@@ -546,7 +546,7 @@ export default function App() {
 
       <div style={{
         position: "fixed", left: 0, right: 0, bottom: 0, background: C.surface, borderTop: `1px solid ${C.line}`,
-        display: "flex", justifyContent: "space-around", padding: "6px 4px calc(6px + env(safe-area-inset-bottom))", zIndex: 25,
+        display: "flex", justifyContent: "space-around", padding: "3px 4px calc(3px + env(safe-area-inset-bottom))", zIndex: 25,
         overflow: "visible",
       }}>
         {TABS.map((t) => {
