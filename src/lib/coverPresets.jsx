@@ -170,7 +170,7 @@ export function CoverPresetArt({ id }) {
 
 /* 給「選擇頭圖」清單用：預設風景圖 + 7 個熱門旅遊景點，依序排列（台灣排最前面） */
 export const COVER_PRESET_LIST = [
-  { id: "default", label: "預設風景圖" },
+  { id: "default", label: "預設" },
   { id: "taiwan", label: "台灣" },
   { id: "japan", label: "日本" },
   { id: "korea", label: "韓國" },
