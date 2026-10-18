@@ -183,7 +183,7 @@ export default function SettlementView({ trip, members, expenses, balances, sett
             </div>
           )}
           <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${C.line}` }}>
-            <div style={{ fontSize: 12, color: C.textSoft, marginBottom: 8 }}>回國正式結清了嗎？按下去把金額凍結，之後就找他/她討錢囉</div>
+            <div style={{ fontSize: 12, color: C.textSoft, marginBottom: 8 }}>要回國結清帳款？按此鍵凍結金額，之後就找他/她討錢囉</div>
             <Btn variant="ghost" full onClick={() => setConfirmFinalize(true)}>旅程總結算</Btn>
           </div>
         </Card>
