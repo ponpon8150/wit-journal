@@ -207,6 +207,47 @@ export function simplifyDebts(bal) {
 }
 
 /**
+ * 「只在有共同花費的人之間結算」：跟 simplifyDebts 不同，這裡不會把全部人的淨結餘
+ * 拿去互相沖抵配對，而是只計算「實際上曾經一起出現在同一筆花費裡」的兩人之間，
+ * 彼此净欠多少，再加減他們之間實際登記過的還款。
+ * 好處是建議還款的兩個人一定彼此有金錢往來的紀錄，不會出現兩個互不認識的人被配對在一起；
+ * 代價是轉帳筆數通常會比 simplifyDebts 多。
+ */
+export function directPairwiseDebts(expenses, settlements) {
+  // owed[`${debtorId}|${creditorId}`] = debtor 直接欠 creditor 多少（還沒互相沖抵前）
+  const owed = {};
+  const addOwed = (debtorId, creditorId, amt) => {
+    if (!debtorId || !creditorId || debtorId === creditorId || amt <= 0) return;
+    const key = `${debtorId}|${creditorId}`;
+    owed[key] = (owed[key] || 0) + amt;
+  };
+
+  (expenses || []).forEach((e) => {
+    (e.participants || []).forEach((p) => {
+      addOwed(p.memberId, e.payer_id, Number(p.shareBase));
+    });
+  });
+  (settlements || []).forEach((s) => {
+    // 已經還過的錢，視為對欠款方向的反向沖抵
+    addOwed(s.to_member, s.from_member, Number(s.amount));
+  });
+
+  const ids = new Set();
+  Object.keys(owed).forEach((k) => k.split("|").forEach((id) => ids.add(id)));
+  const idList = [...ids];
+  const res = [];
+  for (let i = 0; i < idList.length; i++) {
+    for (let j = i + 1; j < idList.length; j++) {
+      const a = idList[i], b = idList[j];
+      const net = (owed[`${a}|${b}`] || 0) - (owed[`${b}|${a}`] || 0);
+      if (net > 0.01) res.push({ from: a, to: b, amount: net });
+      else if (net < -0.01) res.push({ from: b, to: a, amount: -net });
+    }
+  }
+  return res;
+}
+
+/**
  * 查詢即時匯率（市場參考中間價，來源 open.er-api.com，每日更新，免金鑰）。
  * 這個網頁沒有 Artifact 的網路限制，可以直接在瀏覽器呼叫公開 API；
  * 僅供快速估算，正式金額仍建議對照銀行公告匯率。

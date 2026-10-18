@@ -71,6 +71,12 @@ alter table trips add column if not exists travel_currency text;
 -- 沒有設定時畫面會依旅程名稱關鍵字自動挑一張插畫。
 alter table trips add column if not exists cover_url text;
 
+-- 「結算方式」：旅程設定裡可切換的結算演算法。
+-- 'min_transfers'（預設）＝用最少轉帳次數結算，可能配對到彼此沒有直接金錢往來的人；
+-- 'direct_only' ＝只在「實際上曾經一起出現在同一筆花費」或「有過直接還款紀錄」的
+-- 兩人之間結算，不會出現互不相識的配對，但轉帳筆數通常會比較多。
+alter table trips add column if not exists settlement_mode text default 'min_transfers';
+
 -- 「最後編輯者」：花費卡片上顯示「XX 新增/編輯此費用」用。
 -- updated_by / updated_at 只在被編輯過後才會有值；一直沒被編輯過就維持 null，
 -- 畫面上就會改顯示 created_by（建立者）。

@@ -1,10 +1,15 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Check, ArrowRight } from "lucide-react";
-import { C, fmt, simplifyDebts, flagFor, fetchLiveRate } from "../lib/helpers";
+import { C, fmt, simplifyDebts, directPairwiseDebts, flagFor, fetchLiveRate } from "../lib/helpers";
 import { Card, Avatar, Tag, Btn, Modal } from "./ui";
 
 export default function SettlementView({ trip, members, expenses, balances, settlements, onOpenRecord, meId, onFinalize, onUnfreeze, onUpdateRate }) {
-  const suggestions = useMemo(() => simplifyDebts(balances), [balances]);
+  // 依照旅程設定選擇的結算方式計算建議：
+  // 'direct_only' → 只在有共同花費/直接還款紀錄的人之間結算；其餘（含未設定、舊資料）→ 最少轉帳次數。
+  const suggestions = useMemo(
+    () => (trip.settlement_mode === "direct_only" ? directPairwiseDebts(expenses, settlements) : simplifyDebts(balances)),
+    [trip.settlement_mode, balances, expenses, settlements]
+  );
   const memberName = (id) => members.find((m) => m.id === id)?.name || "已離開的旅伴";
   const memberIdx = (id) => members.findIndex((m) => m.id === id);
   const [confirmFinalize, setConfirmFinalize] = useState(false);

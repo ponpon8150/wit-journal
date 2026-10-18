@@ -117,6 +117,11 @@ export async function updateTripCover(code, coverUrl) {
   if (error) throw error;
 }
 
+export async function updateSettlementMode(code, mode) {
+  const { error } = await supabase.from("trips").update({ settlement_mode: mode }).eq("code", code);
+  if (error) throw error;
+}
+
 export async function saveExpense(code, expense, rateUpdate, actor) {
   if (rateUpdate) await updateRate(code, rateUpdate.currency, rateUpdate.rate);
   const isEdit = !!actor?.isEdit;

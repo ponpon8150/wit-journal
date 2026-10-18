@@ -5,7 +5,7 @@ import { resolveTripCover } from "./lib/coverPresets";
 import { supabaseReady } from "./lib/supabase";
 import {
   fetchTrip, fetchMembers, fetchExpenses, fetchSettlements,
-  createTrip, joinTrip, addMember, deleteMember, updateTripInfo, updateRate, updateLastCurrency, updateTripCover,
+  createTrip, joinTrip, addMember, deleteMember, updateTripInfo, updateRate, updateLastCurrency, updateTripCover, updateSettlementMode,
   saveExpense, deleteExpense, addSettlement, finalizeSettlement, unfreezeSettlement, subscribeTrip,
   fetchExpenseEdits,
 } from "./lib/db";
@@ -344,6 +344,17 @@ export default function App() {
     }
   };
 
+  const handleUpdateSettlementMode = async (mode) => {
+    try {
+      await updateSettlementMode(currentCode, mode);
+      setTrip((prev) => (prev ? { ...prev, settlement_mode: mode } : prev)); // 先手動更新一次，不用等即時同步
+      scheduleRefresh(currentCode);
+      showToast("已更新結算方式");
+    } catch (e) {
+      showToast("更新失敗，請稍後再試", "error");
+    }
+  };
+
   /* ---------------------------------- 旅程頭圖 ---------------------------------- */
   const [uploadingCover, setUploadingCover] = useState(false);
   const handleUploadCover = async (file) => {
@@ -521,6 +532,7 @@ export default function App() {
             onLeave={leaveTrip}
             onUpdateTripInfo={handleUpdateTripInfo}
             onUpdateRate={handleUpdateRate}
+            onUpdateSettlementMode={handleUpdateSettlementMode}
             onDeleteMember={handleDeleteMember}
             meId={currentMeId}
             tripCover={tripCover}

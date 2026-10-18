@@ -5,7 +5,7 @@ import { Card, Avatar, Tag, Btn, Modal, Field, HorizonBanner, CoverPickerModal }
 import { COVER_PRESET_LIST } from "../lib/coverPresets";
 import RateManagerCard from "./RateManagerCard";
 
-export default function MembersView({ trip, members, onAddMember, onLeave, onUpdateTripInfo, onUpdateRate, onDeleteMember, meId, tripCover, onUploadCover, onSelectCoverPreset, uploadingCover }) {
+export default function MembersView({ trip, members, onAddMember, onLeave, onUpdateTripInfo, onUpdateRate, onUpdateSettlementMode, onDeleteMember, meId, tripCover, onUploadCover, onSelectCoverPreset, uploadingCover }) {
   const [name, setName] = useState(trip.name);
   const [startDate, setStartDate] = useState(trip.start_date || "");
   const [dayCount, setDayCount] = useState(trip.day_count || 0);
@@ -66,6 +66,18 @@ export default function MembersView({ trip, members, onAddMember, onLeave, onUpd
           </select>
         </Field>
         {dirty && <Btn full onClick={() => onUpdateTripInfo(name.trim() || trip.name, startDate, parseInt(dayCount) || 0, travelCurrency || null)}>儲存旅程設定</Btn>}
+        <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${C.line}` }}>
+          <Field label="結算方式（「結算」分頁的還款建議怎麼配對）">
+            <select
+              className="tl-input"
+              value={trip.settlement_mode === "direct_only" ? "direct_only" : "min_transfers"}
+              onChange={(e) => onUpdateSettlementMode && onUpdateSettlementMode(e.target.value)}
+            >
+              <option value="min_transfers">最少轉帳次數（可能配對到彼此沒有金錢往來的人，但筆數最少）</option>
+              <option value="direct_only">只在有共同花費的人之間結算（不會配對到不相識的人，但轉帳筆數可能較多）</option>
+            </select>
+          </Field>
+        </div>
       </Card>
 
       <Card>
