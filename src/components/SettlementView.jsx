@@ -161,7 +161,7 @@ export default function SettlementView({ trip, members, expenses, balances, sett
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {suggestions.map((s, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: C.bg, borderRadius: 14, padding: "10px 12px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, flexWrap: "wrap", rowGap: 4 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, flexWrap: "wrap", rowGap: 4, minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                       <Avatar name={memberName(s.from)} idx={memberIdx(s.from)} size={24} />
                       <span style={{ fontWeight: 600 }}>{memberName(s.from)}</span>
@@ -174,8 +174,8 @@ export default function SettlementView({ trip, members, expenses, balances, sett
                       {s.to === meId && <Tag label="我" color={C.primary} />}
                     </div>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span style={{ fontWeight: 600, color: C.warn }}>{showAmt(s.amount)} {displayCurrency}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+                    <span style={{ fontWeight: 600, color: C.warn, whiteSpace: "nowrap" }}>{showAmt(s.amount)} {displayCurrency}</span>
                     <Btn variant="subtle" onClick={() => onOpenRecord(s)} style={{ fontSize: 12, padding: "8px 10px", whiteSpace: "nowrap" }}>還款</Btn>
                   </div>
                 </div>
